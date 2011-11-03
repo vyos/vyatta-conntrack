@@ -1,0 +1,13 @@
+type: u32
+
+help: TCP CLOSE-WAIT timeout in seconds
+
+default: 60
+
+val_help: u32:1-21474836; TCP CLOSE-WAIT timeout in seconds
+
+syntax:expression: ($VAR(@) >= 1 && $VAR(@) <= 21474836) ; "Value must be between 1 and 21474836"
+
+update: sudo sysctl -q -w net/netfilter/nf_conntrack_tcp_timeout_close_wait=$VAR(@)
+
+delete: sudo sysctl -q -w net/netfilter/nf_conntrack_tcp_timeout_close_wait=60

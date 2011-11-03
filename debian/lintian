@@ -1,0 +1,2 @@
+vyatta-conntrack: file-in-unusual-dir
+vyatta-conntrack: dir-or-file-in-opt
