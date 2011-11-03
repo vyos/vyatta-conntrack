@@ -7,7 +7,7 @@ Standards-Version: 3.7.2
 
 Package: vyatta-conntrack
 Architecture: any
-Depends: vyatta-cfg,
+Depends: vyatta-cfg-system,
  vyatta-cfg,
  vyatta-op,
  conntrack
