@@ -11,6 +11,7 @@ Depends: vyatta-cfg-system,
  vyatta-cfg,
  vyatta-op,
  conntrack
-Replaces: vyatta-cfg-system
+Replaces: vyatta-cfg-system,
+ vyatta-cfg-firewall
 Description: Vyatta conntrack configuration
  Vyatta conntrack configuration utiliites, templates and scripts.
