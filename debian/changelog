@@ -1,3 +1,10 @@
+vyatta-conntrack (0.4) unstable; urgency=low
+
+  * Bug 7411: Initial commit for conntrack entry deletion / show op mode
+    commands
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Mon, 14 Nov 2011 16:33:04 -0800
+
 vyatta-conntrack (0.3) unstable; urgency=low
 
   * Remove files mistakanly inherited from vyatta-cfg-system.
