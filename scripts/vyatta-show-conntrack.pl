@@ -157,9 +157,21 @@ if ($family eq "ipv4") {
         my @address = split(/:/, $sourceIP);
         $sourceIP = $address[0]; 
         $sourcePort = $address[1];
+
+        # Check if IP address is a valid IPv4 address
         my( $success, $err ) = isValidPortNumber($sourcePort);
+        if (!(isIpAddress($sourceIP))and !($sourceIP eq "0.0.0.0")) {
+            if(!defined($success)) {
+                #both IP and port are invalid
+                die "Please enter a valid source IPv4 address and port \n";
+            } else {
+                #only IP is invalid
+                die "Please enter a valid source IPv4 address\n";
+            }
+        }
         if(!defined($success)) {
-            die "Please enter a valid source port number\n";
+            #port is invalid
+            die "Please enter a valid source port \n";
         }
         $command .= " --orig-port-src $sourcePort";
     }
@@ -169,8 +181,18 @@ if ($family eq "ipv4") {
         $destIP = $address[0]; 
         $destPort = $address[1];
         my( $success, $err ) = isValidPortNumber($destPort);
+        if (!(isIpAddress($destIP))and !($destIP eq "0.0.0.0")) {
+            if(!defined($success)) {
+                #both IP and port are invalid
+                die "Please enter a valid destination IPv4 address and port \n";
+            } else {
+                #only IP is invalid
+                die "Please enter a valid destination IPv4 address\n";
+            }
+        }
         if(!defined($success)) {
-            die "Please enter a valid destination port number\n";
+            #port is invalid
+            die "Please enter a valid destination port \n";
         }
         $command .= " --orig-port-dst $destPort";
     }
