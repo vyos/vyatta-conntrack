@@ -1,6 +1,10 @@
 cfgdir = $(datadir)/vyatta-cfg/templates
 curverdir = $(sysconfdir)/config-migrate/current
 modprobedir = /etc/modprobe.d
+checkparamsonrebootdir = $(bindir)/sudo-users/check-params-on-reboot.d
+
+checkparamsonreboot_SCRIPTS =
+checkparamsonreboot_SCRIPTS += scripts/check-params-on-reboot.d/conntrack-hash-size
 
 curver_DATA = cfg-version/conntrack@1
 
