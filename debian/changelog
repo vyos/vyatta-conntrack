@@ -1,3 +1,10 @@
+vyatta-conntrack (0.5) unstable; urgency=low
+
+  * Bug 7411: improving validations for IPv4 address / port combinations
+    for conntrack
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Tue, 15 Nov 2011 11:40:19 -0800
+
 vyatta-conntrack (0.4) unstable; urgency=low
 
   * Bug 7411: Initial commit for conntrack entry deletion / show op mode
