@@ -32,6 +32,7 @@ use Vyatta::Misc;
 use warnings;
 use strict;
 use Switch;
+use Vyatta::TypeChecker;
 
 my $format = "%-10s %-22s %-22s %-12s %-20s\n";
 
@@ -214,7 +215,52 @@ if ($family eq "ipv4") {
        $command .= " -d $destIP";   
     }
 } else {
-    #family IPv6 not supported, placeholder for v6 code.
+    #placeholder for v6 code.
+    die "IPv6 Conntrack commands are not supported yet\n";
+    if (defined $sourceIP) {
+        if (($sourceIP =~ m/]/)) {
+            my @address = split(/]/, $sourceIP);
+            if (@address) {
+                $sourceIP = substr($address[0], 1);
+                $sourcePort = substr($address[1], 1);
+                my( $success, $err ) = isValidPortNumber($sourcePort);
+                if (validateType('ipv6', $sourceIP)) {
+                    #Valid ipv6 address.
+                } else {
+                    if(!defined($success)) {
+                        die "Please enter a valid source IPv6 address and port \n";
+                    } 
+                }
+                if(!defined($success)) {
+                    die "Please enter a valid source port \n";
+                }    
+                $command .= " -s $sourceIP --orig-port-src $sourcePort";
+                print "IP $sourceIP port $sourcePort\n";
+            }
+        }
+    }
+    if (defined $destIP) {
+        if (($destIP =~ m/]/)) {
+            my @address = split(/]/, $destIP);
+            if (@address) {
+                $destIP = substr($address[0], 1);
+                $destPort = substr($address[1], 1);
+                my( $success, $err ) = isValidPortNumber($destPort);
+                if (validateType('ipv6', $destIP)) {
+                    #Valid ipv6 address.
+                } else {
+                    if(!defined($success)) {
+                        die "Please enter a valid destination IPv6 address and port \n";
+                    } 
+                }
+                if(!defined($success)) {
+                    die "Please enter a valid destination port \n";
+                }    
+                $command .= " -d $destIP --orig-port-dst $destPort";
+                print "IP $sourceIP port $sourcePort\n";
+            }
+        }
+    }
 }
 
 $command .= " -o xml";

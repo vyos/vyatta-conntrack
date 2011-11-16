@@ -1,0 +1,2 @@
+help: Show Conntrack entries for IPv6 protocol 
+run: sudo ${vyatta_bindir}/sudo-users/vyatta-show-conntrack.pl -family $4

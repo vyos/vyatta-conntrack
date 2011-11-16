@@ -207,6 +207,7 @@ if ($family eq "ipv4") {
     }
 } else {
     #family IPv6 not supported, placeholder for v6 code.
+    die "IPv6 Conntrack commands are not supported yet\n";
 }
 
 $command .= " -o xml";
