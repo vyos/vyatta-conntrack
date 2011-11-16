@@ -1,3 +1,9 @@
+vyatta-conntrack (0.6) unstable; urgency=low
+
+  * bug 7411:Added initial code for IPv6, templates and script
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 16 Nov 2011 11:50:11 -0800
+
 vyatta-conntrack (0.5) unstable; urgency=low
 
   * Bug 7411: improving validations for IPv4 address / port combinations
