@@ -216,9 +216,9 @@ if ($family eq "ipv4") {
     }
 } else {
     #placeholder for v6 code.
-    die "IPv6 Conntrack commands are not supported yet\n";
     if (defined $sourceIP) {
         if (($sourceIP =~ m/]/)) {
+            # [IPv6-address]:port
             my @address = split(/]/, $sourceIP);
             if (@address) {
                 $sourceIP = substr($address[0], 1);
@@ -237,6 +237,14 @@ if ($family eq "ipv4") {
                 $command .= " -s $sourceIP --orig-port-src $sourcePort";
                 print "IP $sourceIP port $sourcePort\n";
             }
+        } else {
+            #IPv6-address without port
+                if (validateType('ipv6', $sourceIP)) {
+                    #Valid ipv6 address.
+                    $command .= " -s $sourceIP";
+                } else {
+                    die "Please enter a valid source IPv6 address\n";
+                }
         }
     }
     if (defined $destIP) {
@@ -258,6 +266,14 @@ if ($family eq "ipv4") {
                 }    
                 $command .= " -d $destIP --orig-port-dst $destPort";
                 print "IP $sourceIP port $sourcePort\n";
+            }
+        } else {
+            #IPv6-address without port
+            if (validateType('ipv6', $destIP)) {
+                 #Valid ipv6 address.
+                 $command .= " -d $destIP";
+            } else {
+                die "Please enter a valid destination IPv6 address\n";
             }
         }
     }
