@@ -35,6 +35,7 @@ use Switch;
 use Vyatta::TypeChecker;
 
 my $format = "%-10s %-22s %-22s %-12s %-20s\n";
+my $format_IPv6 = "%-10s %-40s %-40s %-12s %-20s\n";
 
 sub print_xml {
     my ($data, $cache) = @_;
@@ -49,7 +50,7 @@ sub print_xml {
         my $flow_ref = $data->{flow}[$flow];
         my $flow_type = $flow_ref->{type};
         my (%src, %dst, %sport, %dport, %proto, %protonum, $timeout_ref, $connection_id_ref, 
-            $state_connection_ref);
+            $state_connection_ref, %l3_protoname);
         while (1) {
             my $meta_ref = $flow_ref->{meta}[$meta];
             last if ! defined $meta_ref;
@@ -60,6 +61,7 @@ sub print_xml {
                 if (defined $l3_ref) {
                     $src{$dir} = $l3_ref->{src}[0];
                     $dst{$dir} = $l3_ref->{dst}[0];
+                    $l3_protoname{dir} = $l3_ref->{protoname};
                     if (defined $l4_ref) {
                         $sport{$dir} = $l4_ref->{sport}[0];
                         $dport{$dir} = $l4_ref->{dport}[0];
@@ -75,7 +77,7 @@ sub print_xml {
             $meta++;
         }
         my ($proto, $protonum, $in_src, $in_dst, $out_src, $out_dst, $connection_id, 
-            $timeout, $state_connection);
+            $timeout, $state_connection, $l3proto);
         $proto    = $proto{original};
         $protonum = $protonum{original};
         $in_src   = "$src{original}";
@@ -84,6 +86,7 @@ sub print_xml {
         $in_dst  .= ":$dport{original}" if defined $dport{original};
         $connection_id = "$connection_id_ref";
         $timeout = "$timeout_ref";
+        $l3proto = $l3_protoname{original};
 
         if ($state_connection_ref) {
             $state_connection = "$state_connection_ref";
@@ -127,7 +130,11 @@ sub print_xml {
                    }
             }
         }
-        printf($format, $connection_id ,$in_src, $in_dst, $protocol, $timeout);
+        if (defined(l3proto) and (l3proto eq 'ipv6')) {
+            printf($format_IPv6, $connection_id ,$in_src, $in_dst, $protocol, $timeout);
+        } else { 
+            printf($format, $connection_id ,$in_src, $in_dst, $protocol, $timeout);
+        }
         $flow++;
     }
     return $flow;
