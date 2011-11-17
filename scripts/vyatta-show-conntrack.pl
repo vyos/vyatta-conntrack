@@ -216,15 +216,22 @@ if ($family eq "ipv4") {
     }
 } else {
     #placeholder for v6 code.
-    if (defined $sourceIP) {
-        if (($sourceIP =~ m/]/)) {
+    if ((defined $sourceIP) and ($sourceIP ne "0:0:0:0:0:0:0:0")) {
+        if ((($sourceIP =~ m/^\[/) and (!($sourceIP =~ m/]/))) or 
+             (!($sourceIP =~ m/^\[/) and (($sourceIP =~ m/]/)))) {
+           die "Please use prescribed format for source IP: [IPv6-address]:port \n";
+        }
+        if (($sourceIP =~ m/^\[/) and ($sourceIP =~ m/]/)) {
             # [IPv6-address]:port
             my @address = split(/]/, $sourceIP);
             if (@address) {
+                if(!$address[0] or !$address[1]) {
+                    die "Please use prescribed format for source IP: [IPv6-address]:port \n";
+                }
                 $sourceIP = substr($address[0], 1);
                 $sourcePort = substr($address[1], 1);
                 my( $success, $err ) = isValidPortNumber($sourcePort);
-                if (validateType('ipv6', $sourceIP)) {
+                if (validateType('ipv6', $sourceIP, 'quiet')) {
                     #Valid ipv6 address.
                 } else {
                     if(!defined($success)) {
@@ -234,27 +241,29 @@ if ($family eq "ipv4") {
                 if(!defined($success)) {
                     die "Please enter a valid source port \n";
                 }    
-                $command .= " -s $sourceIP --orig-port-src $sourcePort";
-                print "IP $sourceIP port $sourcePort\n";
+                $command .= " --orig-port-src $sourcePort";
             }
         } else {
             #IPv6-address without port
-                if (validateType('ipv6', $sourceIP)) {
+                if (validateType('ipv6', $sourceIP, 'quiet')) {
                     #Valid ipv6 address.
-                    $command .= " -s $sourceIP";
                 } else {
                     die "Please enter a valid source IPv6 address\n";
                 }
         }
     }
-    if (defined $destIP) {
-        if (($destIP =~ m/]/)) {
+    if ((defined $destIP) and ($destIP ne "0:0:0:0:0:0:0:0")) {
+        if ((($destIP =~ m/^\[/) and (!($destIP =~ m/]/))) or 
+             (!($destIP =~ m/^\[/) and (($destIP =~ m/]/)))) {
+           die "Please use prescribed format for destination IP: [IPv6-address]:port \n";
+        }
+        if (($destIP =~ m/^\[/) and ($destIP =~ m/]/)) {
             my @address = split(/]/, $destIP);
             if (@address) {
                 $destIP = substr($address[0], 1);
                 $destPort = substr($address[1], 1);
                 my( $success, $err ) = isValidPortNumber($destPort);
-                if (validateType('ipv6', $destIP)) {
+                if (validateType('ipv6', $destIP, 'quiet')) {
                     #Valid ipv6 address.
                 } else {
                     if(!defined($success)) {
@@ -264,18 +273,23 @@ if ($family eq "ipv4") {
                 if(!defined($success)) {
                     die "Please enter a valid destination port \n";
                 }    
-                $command .= " -d $destIP --orig-port-dst $destPort";
-                print "IP $sourceIP port $sourcePort\n";
+                #$command .= " --orig-port-dst $destPort";
             }
         } else {
             #IPv6-address without port
-            if (validateType('ipv6', $destIP)) {
+            if (validateType('ipv6', $destIP, 'quiet')) {
                  #Valid ipv6 address.
-                 $command .= " -d $destIP";
+                 #$command .= " -d $destIP";
             } else {
                 die "Please enter a valid destination IPv6 address\n";
             }
         }
+    }
+    if (($sourceIP) and ($sourceIP ne "0:0:0:0:0:0:0:0")) {
+        $command .= " -s $sourceIP";
+    }
+    if (($destIP) and ($destIP ne "0:0:0:0:0:0:0:0")) {
+        $command .= " -d $destIP";
     }
 }
 
