@@ -1,3 +1,9 @@
+vyatta-conntrack (0.8) unstable; urgency=low
+
+  * bug 7411:IPv6 show command: validation added
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 16 Nov 2011 17:00:43 -0800
+
 vyatta-conntrack (0.7) unstable; urgency=low
 
   * bug 7411:IPv6 show command without port
