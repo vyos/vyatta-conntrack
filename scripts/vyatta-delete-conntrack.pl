@@ -33,8 +33,10 @@ use POSIX;
 use lib "/opt/vyatta/share/perl5";
 use Vyatta::Misc;
 use Sys::Syslog qw(:standard :macros); 
+use Vyatta::TypeChecker;
 
-my $format = "Connection ID %-10s Source IP %-22s Destination IP %-22s Protocol %-12s\n";
+my $format = "%-10s %-22s %-22s %-12s\n";
+my $format_IPv6 = "%-10s %-40s %-40s %-12s\n";
 
 sub add_xml_root {
     my $xml = shift;
@@ -44,13 +46,18 @@ sub add_xml_root {
 }
 
 sub print_data_from_xml {
-    my ($data, $cache) = @_;
+    my ($data, $cache, $family) = @_;
 
     my $flow = 0;
 
     my %flowh;
     my $tcount = 0;
     print "Deleting following Conntrack entries\n\n";  
+    if ($family eq 'ipv6') {
+        printf($format_IPv6, 'CONN ID', 'Source', 'Destination', 'Protocol');
+    } else {
+        printf($format, 'CONN ID', 'Source', 'Destination', 'Protocol');
+    }
     #open syslog 
     openlog($0, "", LOG_USER);
     while (1) {
@@ -106,7 +113,12 @@ sub print_data_from_xml {
         $out_dst .= ":$sport{reply}" if defined $sport{reply};
 
         my $protocol = $proto . ' [' . $protonum . ']';
-        printf($format, $connection_id ,$in_src, $in_dst, $protocol);
+        if ($family eq 'ipv6') {
+            #IPv6 Addresses can be 39 chars long, so chose the format as per family
+            printf($format_IPv6, $connection_id ,$in_src, $in_dst, $protocol);
+        } else { 
+            printf($format, $connection_id ,$in_src, $in_dst, $protocol);
+        }
         syslog("info", "Deleting Conntrack entry:conn-id $connection_id, src. IP $in_src, dest. IP $in_dst, protocol $protocol");
         $flow++;
     }
@@ -206,8 +218,82 @@ if ($family eq "ipv4") {
        $command .= " -d $destIP";   
     }
 } else {
-    #family IPv6 not supported, placeholder for v6 code.
-    die "IPv6 Conntrack commands are not supported yet\n";
+    #IPv6 code.
+    if ((defined $sourceIP) and ($sourceIP ne "0:0:0:0:0:0:0:0")) {
+        if ((($sourceIP =~ m/^\[/) and (!($sourceIP =~ m/]/))) or 
+             (!($sourceIP =~ m/^\[/) and (($sourceIP =~ m/]/)))) {
+           die "Please use prescribed format for source IP: [IPv6-address]:port \n";
+        }
+        if (($sourceIP =~ m/^\[/) and ($sourceIP =~ m/]/)) {
+            # [IPv6-address]:port
+            my @address = split(/]/, $sourceIP);
+            if (@address) {
+                if(!$address[0] or !$address[1]) {
+                    die "Please use prescribed format for source IP: [IPv6-address]:port \n";
+                }
+                $sourceIP = substr($address[0], 1);
+                $sourcePort = substr($address[1], 1);
+                my( $success, $err ) = isValidPortNumber($sourcePort);
+                if (validateType('ipv6', $sourceIP, 'quiet')) {
+                    #Valid ipv6 address.
+                } else {
+                    if(!defined($success)) {
+                        die "Please enter a valid source IPv6 address and port \n";
+                    } 
+                }
+                if(!defined($success)) {
+                    die "Please enter a valid source port \n";
+                }    
+                $command .= " --orig-port-src $sourcePort";
+            }
+        } else {
+            #IPv6-address without port
+                if (validateType('ipv6', $sourceIP, 'quiet')) {
+                    #Valid ipv6 address.
+                } else {
+                    die "Please enter a valid source IPv6 address\n";
+                }
+        }
+    }
+    if ((defined $destIP) and ($destIP ne "0:0:0:0:0:0:0:0")) {
+        if ((($destIP =~ m/^\[/) and (!($destIP =~ m/]/))) or 
+             (!($destIP =~ m/^\[/) and (($destIP =~ m/]/)))) {
+           die "Please use prescribed format for destination IP: [IPv6-address]:port \n";
+        }
+        if (($destIP =~ m/^\[/) and ($destIP =~ m/]/)) {
+            my @address = split(/]/, $destIP);
+            if (@address) {
+                $destIP = substr($address[0], 1);
+                $destPort = substr($address[1], 1);
+                my( $success, $err ) = isValidPortNumber($destPort);
+                if (validateType('ipv6', $destIP, 'quiet')) {
+                    #Valid ipv6 address.
+                } else {
+                    if(!defined($success)) {
+                        die "Please enter a valid destination IPv6 address and port \n";
+                    } 
+                }
+                if(!defined($success)) {
+                    die "Please enter a valid destination port \n";
+                }    
+                #$command .= " --orig-port-dst $destPort";
+            }
+        } else {
+            #IPv6-address without port
+            if (validateType('ipv6', $destIP, 'quiet')) {
+                 #Valid ipv6 address.
+                 #$command .= " -d $destIP";
+            } else {
+                die "Please enter a valid destination IPv6 address\n";
+            }
+        }
+    }
+    if (($sourceIP) and ($sourceIP ne "0:0:0:0:0:0:0:0")) {
+        $command .= " -s $sourceIP";
+    }
+    if (($destIP) and ($destIP ne "0:0:0:0:0:0:0:0")) {
+        $command .= " -d $destIP";
+    }
 }
 
 $command .= " -o xml";
@@ -226,11 +312,11 @@ if ((defined($destPort)) or (defined($sourcePort))) {
 if ($xml1) {
     $xml1 = add_xml_root($xml1);
     $data = $xs->XMLin($xml1);
-    print_data_from_xml($data);
+    print_data_from_xml($data, "", $family);
 }
 if ($xml2) {
     $xml2 = add_xml_root($xml2);
     $data = $xs->XMLin($xml2);
-    print_data_from_xml($data);
+    print_data_from_xml($data, "", $family);
 }
 # end of file

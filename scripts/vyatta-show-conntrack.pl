@@ -38,8 +38,7 @@ my $format = "%-10s %-22s %-22s %-12s %-20s\n";
 my $format_IPv6 = "%-10s %-40s %-40s %-12s %-20s\n";
 
 sub print_xml {
-    my ($data, $cache) = @_;
-
+    my ($data, $cache, $family) = @_;
     my $flow = 0;
 
     my %flowh;
@@ -50,7 +49,7 @@ sub print_xml {
         my $flow_ref = $data->{flow}[$flow];
         my $flow_type = $flow_ref->{type};
         my (%src, %dst, %sport, %dport, %proto, %protonum, $timeout_ref, $connection_id_ref, 
-            $state_connection_ref, %l3_protoname);
+            $state_connection_ref);
         while (1) {
             my $meta_ref = $flow_ref->{meta}[$meta];
             last if ! defined $meta_ref;
@@ -61,7 +60,6 @@ sub print_xml {
                 if (defined $l3_ref) {
                     $src{$dir} = $l3_ref->{src}[0];
                     $dst{$dir} = $l3_ref->{dst}[0];
-                    $l3_protoname{dir} = $l3_ref->{protoname};
                     if (defined $l4_ref) {
                         $sport{$dir} = $l4_ref->{sport}[0];
                         $dport{$dir} = $l4_ref->{dport}[0];
@@ -77,7 +75,7 @@ sub print_xml {
             $meta++;
         }
         my ($proto, $protonum, $in_src, $in_dst, $out_src, $out_dst, $connection_id, 
-            $timeout, $state_connection, $l3proto);
+            $timeout, $state_connection);
         $proto    = $proto{original};
         $protonum = $protonum{original};
         $in_src   = "$src{original}";
@@ -86,7 +84,6 @@ sub print_xml {
         $in_dst  .= ":$dport{original}" if defined $dport{original};
         $connection_id = "$connection_id_ref";
         $timeout = "$timeout_ref";
-        $l3proto = $l3_protoname{original};
 
         if ($state_connection_ref) {
             $state_connection = "$state_connection_ref";
@@ -130,7 +127,8 @@ sub print_xml {
                    }
             }
         }
-        if (defined(l3proto) and (l3proto eq 'ipv6')) {
+        if ( $family eq 'ipv6') {
+            #IPv6 Addresses can be 39 chars long, so chose the format as per family
             printf($format_IPv6, $connection_id ,$in_src, $in_dst, $protocol, $timeout);
         } else { 
             printf($format, $connection_id ,$in_src, $in_dst, $protocol, $timeout);
@@ -222,7 +220,7 @@ if ($family eq "ipv4") {
        $command .= " -d $destIP";   
     }
 } else {
-    #placeholder for v6 code.
+    #IPv6 code.
     if ((defined $sourceIP) and ($sourceIP ne "0:0:0:0:0:0:0:0")) {
         if ((($sourceIP =~ m/^\[/) and (!($sourceIP =~ m/]/))) or 
              (!($sourceIP =~ m/^\[/) and (($sourceIP =~ m/]/)))) {
@@ -305,7 +303,13 @@ print "TCP state codes: SS - SYN SENT, SR - SYN RECEIVED, ES - ESTABLISHED,\n";
 print "                 FW - FIN WAIT, CW - CLOSE WAIT, LA - LAST ACK,\n";
 print "                 TW - TIME WAIT, CL - CLOSE, LI - LISTEN\n\n";
 
-printf($format, 'CONN ID', 'Source', 'Destination', 'Protocol', 'TIMEOUT');
+#IPv6 Addresses can be 39 chars long, so chose the format as per family
+if ($family eq 'ipv4') {
+    printf($format, 'CONN ID', 'Source', 'Destination', 'Protocol', 'TIMEOUT');
+} else {
+    printf($format_IPv6, 'CONN ID', 'Source', 'Destination', 'Protocol', 'TIMEOUT');
+}
+
 if ((defined($destPort)) or (defined($sourcePort))) {
     my $command_final = $command_prefix." -p tcp".$command; 
     $xml1 = `$command_final 2> /dev/null`; 
@@ -320,10 +324,10 @@ if ((defined($destPort)) or (defined($sourcePort))) {
 
 if ($xml1) {
     $data = $xs->XMLin($xml1);
-    print_xml($data);
+    print_xml($data, "", $family);
 }
 if ($xml2) {
     $data = $xs->XMLin($xml2);
-    print_xml($data);
+    print_xml($data, "",  $family);
 }
 # end of file
