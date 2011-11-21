@@ -1,3 +1,9 @@
+vyatta-conntrack (0.11) unstable; urgency=low
+
+  * bug 7411: IPv6 check added to show / delete
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Mon, 21 Nov 2011 15:04:09 -0800
+
 vyatta-conntrack (0.10) unstable; urgency=low
 
   * bug 7411: IPv6 conntrack delete code, updated formatting
