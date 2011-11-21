@@ -235,7 +235,9 @@ if ($family eq "ipv4") {
                 $sourcePort = substr($address[1], 1);
                 my( $success, $err ) = isValidPortNumber($sourcePort);
                 if (validateType('ipv6', $sourceIP, 'quiet')) {
-                    #Valid ipv6 address.
+                    if ($sourceIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                        die "Please enter a valid source IPv6 address\n";
+                    }
                 } else {
                     if(!defined($success)) {
                         die "Please enter a valid source IPv6 address and port \n";
@@ -249,7 +251,9 @@ if ($family eq "ipv4") {
         } else {
             #IPv6-address without port
                 if (validateType('ipv6', $sourceIP, 'quiet')) {
-                    #Valid ipv6 address.
+                    if ($sourceIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                        die "Please enter a valid source IPv6 address\n";
+                    }
                 } else {
                     die "Please enter a valid source IPv6 address\n";
                 }
@@ -267,7 +271,9 @@ if ($family eq "ipv4") {
                 $destPort = substr($address[1], 1);
                 my( $success, $err ) = isValidPortNumber($destPort);
                 if (validateType('ipv6', $destIP, 'quiet')) {
-                    #Valid ipv6 address.
+                    if ($destIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                        die "Please enter a valid destination IPv6 address\n";
+                    }
                 } else {
                     if(!defined($success)) {
                         die "Please enter a valid destination IPv6 address and port \n";
@@ -281,8 +287,9 @@ if ($family eq "ipv4") {
         } else {
             #IPv6-address without port
             if (validateType('ipv6', $destIP, 'quiet')) {
-                 #Valid ipv6 address.
-                 #$command .= " -d $destIP";
+                if ($destIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                    die "Please enter a valid destination IPv6 address\n";
+                }
             } else {
                 die "Please enter a valid destination IPv6 address\n";
             }
