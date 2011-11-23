@@ -3,7 +3,7 @@ help: Connection tracking engine options
 priority: 218 # before NAT and conntrack-sync are configured
 
 delete: # set conntrack table size to standard 16384 entries if conntrack settings are removed
-        sudo sysctl -q -w net/nf_conntrack_max=16384
+        sudo sysctl -q -w net/nf_conntrack_max=1638
 
         # set conntrack expect table size to standard 2048 entries if conntrack settings are removed
         sudo sysctl -q -w net/netfilter/nf_conntrack_expect_max=2048

@@ -11,15 +11,14 @@
 # tracking table consumes kernel memory, so the size selected should
 # be no larger than necessary.
 #
-# default value when contrack is not set - 16384
-# default value when conntrack is set - 32768
+# default value: 16384
 #
 
 type: u32
 
 help: Size of connection tracking table
 
-default: 32768
+default: 16384
 
 val_help: u32:1-50000000; Number of entries allowed in connection tracking table
 
