@@ -1,3 +1,12 @@
+vyatta-conntrack (0.12) unstable; urgency=low
+
+  * Move check-params-on-reboot script from firewall, change paths
+    acordingly.
+  * Update automake rules to include check-params-on-reboot script.
+  * Get conntrack default values to sync with kernel defaults.
+
+ -- Daniil Baturin <daniil.baturin@vyatta.com>  Wed, 23 Nov 2011 21:43:40 +0700
+
 vyatta-conntrack (0.11) unstable; urgency=low
 
   * bug 7411: IPv6 check added to show / delete
