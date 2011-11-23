@@ -1,0 +1,3 @@
+help: Delete Conntrack entry with the connection ID
+allowed: echo -n 'Connection ID'
+run: sudo ${vyatta_bindir}/sudo-users/vyatta-delete-conntrack.pl -family $4 -id $6

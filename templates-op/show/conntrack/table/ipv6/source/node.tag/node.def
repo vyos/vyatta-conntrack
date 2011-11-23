@@ -1,0 +1,3 @@
+help: Show Conntrack entries for the source IP 
+allowed: echo -n '<IPv6-address>' '<[IPv6-address]:port>'
+run: sudo ${vyatta_bindir}/sudo-users/vyatta-show-conntrack.pl -family $4 -source_IP $6  

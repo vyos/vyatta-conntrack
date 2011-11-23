@@ -1,3 +1,53 @@
+vyatta-conntrack (0.11) unstable; urgency=low
+
+  * bug 7411: IPv6 check added to show / delete
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Mon, 21 Nov 2011 15:04:09 -0800
+
+vyatta-conntrack (0.10) unstable; urgency=low
+
+  * bug 7411: IPv6 conntrack delete code, updated formatting
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Thu, 17 Nov 2011 17:08:03 -0800
+
+vyatta-conntrack (0.9) unstable; urgency=low
+
+  * bug ID 7411: added output format for IPv6 show command
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Thu, 17 Nov 2011 14:07:18 -0800
+
+vyatta-conntrack (0.8) unstable; urgency=low
+
+  * bug 7411:IPv6 show command: validation added
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 16 Nov 2011 17:00:43 -0800
+
+vyatta-conntrack (0.7) unstable; urgency=low
+
+  * bug 7411:IPv6 show command without port
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 16 Nov 2011 13:54:01 -0800
+
+vyatta-conntrack (0.6) unstable; urgency=low
+
+  * bug 7411:Added initial code for IPv6, templates and script
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 16 Nov 2011 11:50:11 -0800
+
+vyatta-conntrack (0.5) unstable; urgency=low
+
+  * Bug 7411: improving validations for IPv4 address / port combinations
+    for conntrack
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Tue, 15 Nov 2011 11:40:19 -0800
+
+vyatta-conntrack (0.4) unstable; urgency=low
+
+  * Bug 7411: Initial commit for conntrack entry deletion / show op mode
+    commands
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Mon, 14 Nov 2011 16:33:04 -0800
+
 vyatta-conntrack (0.3) unstable; urgency=low
 
   * Remove files mistakanly inherited from vyatta-cfg-system.
