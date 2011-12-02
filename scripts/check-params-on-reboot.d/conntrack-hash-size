@@ -4,17 +4,27 @@
 #
 
 BOOTFILE=$1
-cthash_cfg=$(cli-shell-api cfReturnValue $BOOTFILE system conntrack hash-size)
+
+# Obtain firewall config version
+version=`tail -n 2 $BOOTFILE | sed -n 's/.*\(firewall\@[0-9]\).*/\1/; h; x;p;q' | awk -F '@' '{print $2}'`
+if [ $version -ge 5 ]; then
+    # The config is from oxnard or higher
+    cthash_cfg=$(cli-shell-api cfReturnValue $BOOTFILE system conntrack hash-size)
+else
+    # The config is from pre-oxnard release
+    cthash_cfg=$(grep "conntrack-hash-size" /config/config.boot | awk -F ' ' '{print $2}')
+fi
 
 if [ -z "$cthash_cfg" ]; then
-	cthash_cfg=4096 # default hashsize value that Vyatta ships
+        cthash_cfg=4096 # default hashsize value that Vyatta ships
 fi
 
 if ! grep -q "nf_conntrack hashsize=$cthash_cfg$" \
-	/etc/modprobe.d/vyatta_nf_conntrack.conf
+        /etc/modprobe.d/vyatta_nf_conntrack.conf
 then
-	sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' \
-		/etc/modprobe.d/vyatta_nf_conntrack.conf"
-	sudo sh -c "echo options nf_conntrack hashsize=$cthash_cfg >> \
-		/etc/modprobe.d/vyatta_nf_conntrack.conf"
+        sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' \
+                /etc/modprobe.d/vyatta_nf_conntrack.conf"
+        sudo sh -c "echo options nf_conntrack hashsize=$cthash_cfg >> \
+                /etc/modprobe.d/vyatta_nf_conntrack.conf"
 fi
+
