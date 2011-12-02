@@ -1,3 +1,11 @@
+vyatta-conntrack (0.13) unstable; urgency=low
+
+  * Fix a mistype in conntrack top-level node.def (1638 instead of
+    16384)
+  * Add a case for pre-oxnard config boot to check-params-on-reboot
+
+ -- Daniil Baturin <daniil.baturin@vyatta.com>  Fri, 02 Dec 2011 08:00:42 +0700
+
 vyatta-conntrack (0.12) unstable; urgency=low
 
   * Move check-params-on-reboot script from firewall, change paths
