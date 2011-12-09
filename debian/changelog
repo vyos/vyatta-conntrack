@@ -1,3 +1,10 @@
+vyatta-conntrack (0.14) unstable; urgency=low
+
+  * Bug 7675:Allow any and combination of any with port in conntrack
+    entry show / deletion commands
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Fri, 09 Dec 2011 14:06:07 -0800
+
 vyatta-conntrack (0.13) unstable; urgency=low
 
   * Fix a mistype in conntrack top-level node.def (1638 instead of
