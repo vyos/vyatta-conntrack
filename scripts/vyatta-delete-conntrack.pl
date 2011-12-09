@@ -160,6 +160,9 @@ if ($family eq "ipv4") {
         $sourceIP = $address[0]; 
         $sourcePort = $address[1];
 
+        if ((defined $sourceIP) and ($sourceIP eq "any")) {
+           $sourceIP = "0.0.0.0";   
+        }
         #Validate the entered IP and port
         my( $success, $err ) = isValidPortNumber($sourcePort);
         if (!(isIpAddress($sourceIP))and !($sourceIP eq "0.0.0.0")) {
@@ -183,6 +186,9 @@ if ($family eq "ipv4") {
         $destIP = $address[0]; 
         $destPort = $address[1];
 
+        if ((defined $destIP) and ($destIP eq "any")) {
+           $destIP = "0.0.0.0";   
+        }
         #Validate the entered IP and port
         my( $success, $err ) = isValidPortNumber($destPort);
         if (!(isIpAddress($destIP))and !($destIP eq "0.0.0.0")) {
@@ -199,6 +205,13 @@ if ($family eq "ipv4") {
             die "Please enter a valid destination port \n";
         }
         $command .= " --orig-port-dst $destPort";
+    }
+    #support any for 0.0.0.0
+    if ((defined $sourceIP) and ($sourceIP eq "any")) {
+       $sourceIP = "0.0.0.0";   
+    }
+    if ((defined $destIP) and ($destIP eq "any")) {
+       $destIP = "0.0.0.0";   
     }
 
     if ((defined $sourceIP) and !($sourceIP eq "0.0.0.0")) {
@@ -234,14 +247,16 @@ if ($family eq "ipv4") {
                 $sourceIP = substr($address[0], 1);
                 $sourcePort = substr($address[1], 1);
                 my( $success, $err ) = isValidPortNumber($sourcePort);
-                if (validateType('ipv6', $sourceIP, 'quiet')) {
-                    if ($sourceIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
-                        die "Please enter a valid source IPv6 address\n";
+                if ($sourceIP ne "any") {
+                    if (validateType('ipv6', $sourceIP, 'quiet')) {
+                        if ($sourceIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                            die "Please enter a valid source IPv6 address\n";
+                        }
+                    } else {
+                        if(!defined($success)) {
+                            die "Please enter a valid source IPv6 address and port \n";
+                        } 
                     }
-                } else {
-                    if(!defined($success)) {
-                        die "Please enter a valid source IPv6 address and port \n";
-                    } 
                 }
                 if(!defined($success)) {
                     die "Please enter a valid source port \n";
@@ -250,12 +265,14 @@ if ($family eq "ipv4") {
             }
         } else {
             #IPv6-address without port
-                if (validateType('ipv6', $sourceIP, 'quiet')) {
-                    if ($sourceIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                if ($sourceIP ne "any") {
+                    if (validateType('ipv6', $sourceIP, 'quiet')) {
+                        if ($sourceIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                            die "Please enter a valid source IPv6 address\n";
+                        }
+                    } else {
                         die "Please enter a valid source IPv6 address\n";
                     }
-                } else {
-                    die "Please enter a valid source IPv6 address\n";
                 }
         }
     }
@@ -270,14 +287,16 @@ if ($family eq "ipv4") {
                 $destIP = substr($address[0], 1);
                 $destPort = substr($address[1], 1);
                 my( $success, $err ) = isValidPortNumber($destPort);
-                if (validateType('ipv6', $destIP, 'quiet')) {
-                    if ($destIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
-                        die "Please enter a valid destination IPv6 address\n";
+                if ($destIP ne "any") {
+                    if (validateType('ipv6', $destIP, 'quiet')) {
+                        if ($destIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                            die "Please enter a valid destination IPv6 address\n";
+                        }
+                    } else {
+                        if(!defined($success)) {
+                            die "Please enter a valid destination IPv6 address and port \n";
+                        } 
                     }
-                } else {
-                    if(!defined($success)) {
-                        die "Please enter a valid destination IPv6 address and port \n";
-                    } 
                 }
                 if(!defined($success)) {
                     die "Please enter a valid destination port \n";
@@ -286,14 +305,24 @@ if ($family eq "ipv4") {
             }
         } else {
             #IPv6-address without port
-            if (validateType('ipv6', $destIP, 'quiet')) {
-                if ($destIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+            if ($destIP ne "any") {
+                if (validateType('ipv6', $destIP, 'quiet')) {
+                    if ($destIP =~ m/[^ABCDEFabcdef0123456789:\[\]]/) {
+                        die "Please enter a valid destination IPv6 address\n";
+                    }
+                } else {
                     die "Please enter a valid destination IPv6 address\n";
                 }
-            } else {
-                die "Please enter a valid destination IPv6 address\n";
             }
         }
+    }
+
+    # Support "any" keyword
+    if ((defined $destIP) and ($destIP eq "any")) {
+        $destIP = "0:0:0:0:0:0:0:0";   
+    }
+    if ((defined $sourceIP) and ($sourceIP eq "any")) {
+        $sourceIP = "0:0:0:0:0:0:0:0";   
     }
     if (($sourceIP) and ($sourceIP ne "0:0:0:0:0:0:0:0")) {
         $command .= " -s $sourceIP";
