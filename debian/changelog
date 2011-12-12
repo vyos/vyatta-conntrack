@@ -1,3 +1,14 @@
+vyatta-conntrack (0.15) unstable; urgency=low
+
+  [ Daniil Baturin ]
+  * Fix year in package copyright file.
+  * Handle the case of missing config version on reboot properly.
+
+  [ Gaurav Sinha ]
+  * Bug 7677:Allow quiet mode for delete conntrack command to
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Mon, 12 Dec 2011 15:09:59 -0800
+
 vyatta-conntrack (0.14) unstable; urgency=low
 
   * Bug 7675:Allow any and combination of any with port in conntrack
