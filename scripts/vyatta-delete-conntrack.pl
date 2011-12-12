@@ -53,7 +53,7 @@ sub print_data_from_xml {
     my %flowh;
     my $tcount = 0;
     if (!(defined $quiet)) {
-        print "Deleting following Conntrack entries\n\n";  
+        print "Deleting the following conntrack table entries:\n\n";  
         if ($family eq 'ipv6') {
             printf($format_IPv6, 'CONN ID', 'Source', 'Destination', 'Protocol');
         } else {
