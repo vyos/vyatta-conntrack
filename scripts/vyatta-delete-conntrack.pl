@@ -46,20 +46,24 @@ sub add_xml_root {
 }
 
 sub print_data_from_xml {
-    my ($data, $cache, $family) = @_;
+    my ($data, $cache, $family, $quiet) = @_;
 
     my $flow = 0;
 
     my %flowh;
     my $tcount = 0;
-    print "Deleting following Conntrack entries\n\n";  
-    if ($family eq 'ipv6') {
-        printf($format_IPv6, 'CONN ID', 'Source', 'Destination', 'Protocol');
-    } else {
-        printf($format, 'CONN ID', 'Source', 'Destination', 'Protocol');
+    if (!(defined $quiet)) {
+        print "Deleting following Conntrack entries\n\n";  
+        if ($family eq 'ipv6') {
+            printf($format_IPv6, 'CONN ID', 'Source', 'Destination', 'Protocol');
+        } else {
+            printf($format, 'CONN ID', 'Source', 'Destination', 'Protocol');
+        }
     }
     #open syslog 
-    openlog($0, "", LOG_USER);
+    if (!(defined $quiet)) {
+        openlog("vyatta-conntrack", "", LOG_USER);
+    }
     while (1) {
         my $meta = 0;
         last if ! defined $data->{flow}[$flow];
@@ -113,17 +117,21 @@ sub print_data_from_xml {
         $out_dst .= ":$sport{reply}" if defined $sport{reply};
 
         my $protocol = $proto . ' [' . $protonum . ']';
-        if ($family eq 'ipv6') {
-            #IPv6 Addresses can be 39 chars long, so chose the format as per family
-            printf($format_IPv6, $connection_id ,$in_src, $in_dst, $protocol);
-        } else { 
-            printf($format, $connection_id ,$in_src, $in_dst, $protocol);
-        }
-        syslog("info", "Deleting Conntrack entry:conn-id $connection_id, src. IP $in_src, dest. IP $in_dst, protocol $protocol");
+        if (!(defined $quiet)) {
+            if ($family eq 'ipv6') {
+                #IPv6 Addresses can be 39 chars long, so chose the format as per family
+                printf($format_IPv6, $connection_id ,$in_src, $in_dst, $protocol);
+            } else { 
+                printf($format, $connection_id ,$in_src, $in_dst, $protocol);
+            }
+                syslog ("info", "Deleting Conntrack entry:conn-id $connection_id, src. IP $in_src, dest. IP $in_dst, protocol $protocol"); }
+        
         $flow++;
     }
     #close syslog
-    closelog();
+    if (!(defined $quiet)) {
+        closelog();
+    }
     return $flow;
 }
 
@@ -131,12 +139,13 @@ sub print_data_from_xml {
 # main
 #
 
-my ($sourceIP, $destIP, $family, $connection_ID);
+my ($sourceIP, $destIP, $family, $connection_ID, $quiet);
 
 GetOptions("source_IP=s"    => \$sourceIP,
            "dest_IP=s"      => \$destIP,
            "family=s"       => \$family,
            "id=i"           => \$connection_ID,
+           "quiet=s"        => \$quiet,
 );
 
 my $xs = XML::Simple->new(ForceArray => 1, KeepRoot => 0);
@@ -332,6 +341,19 @@ if ($family eq "ipv4") {
     }
 }
 
+if (defined ($quiet)) {
+    openlog("vyatta-conntrack", "", LOG_USER);
+    if ($connection_ID) {
+        syslog ("info", "Deleting conntrack entry with connection-id: $connection_ID");
+    } else {
+        if (!(defined $sourcePort)) { $sourcePort = "any-port"; }
+        if (!(defined $destPort)) { $destPort = "any-port"; }
+        if (!(defined $sourceIP)) { $sourceIP = "any"; }
+        if (!(defined $destIP)) { $destIP = "any"; }
+        syslog("info", "Deleting conntrack entries with parameters: Source IP $sourceIP, source port: $sourcePort, Destination IP $destIP, destination port: $destPort");
+    }
+    closelog();
+}
 $command .= " -o xml";
 if ((defined($destPort)) or (defined($sourcePort))) {
     my $command_final = $command_prefix." -p tcp".$command; 
@@ -348,11 +370,11 @@ if ((defined($destPort)) or (defined($sourcePort))) {
 if ($xml1) {
     $xml1 = add_xml_root($xml1);
     $data = $xs->XMLin($xml1);
-    print_data_from_xml($data, "", $family);
+    print_data_from_xml($data, "", $family, $quiet);
 }
 if ($xml2) {
     $xml2 = add_xml_root($xml2);
     $data = $xs->XMLin($xml2);
-    print_data_from_xml($data, "", $family);
+    print_data_from_xml($data, "", $family, $quiet);
 }
 # end of file
