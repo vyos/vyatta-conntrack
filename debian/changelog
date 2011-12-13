@@ -1,3 +1,9 @@
+vyatta-conntrack (0.17) unstable; urgency=low
+
+  * Bug fix 7397 - Conntrack log creation and deletion.
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Tue, 13 Dec 2011 02:50:50 -0800
+
 vyatta-conntrack (0.16) unstable; urgency=low
 
   * Bug 7680: Fixed sentence displayed in deletion
