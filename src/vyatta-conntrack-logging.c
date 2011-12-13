@@ -37,21 +37,14 @@ void init_nbuffer()
   return;
 }
 
-// Function to write to syslog
-
-void sys_logger(char *message)
-{
-  openlog("log-conntrack", "LOG_PID", LOG_USER);
-  syslog(LOG_INFO, message);
-  closelog();
-}
-
 //Signal handler for SIGHUP and SIGTERM
 void signal_handler(sig)
 {
   switch(sig) {
     case SIGHUP:
-      sys_logger("Stopping conntrack logging daemon"); 
+      openlog("log-conntrack", LOG_PID, LOG_USER);
+      syslog(LOG_ALERT,"STOPPING CONNTRACK DAEMON");
+      closelog();
       int i;
       for(i=0;i<pcounter;i++) {
         kill(pids[i], SIGKILL); 
@@ -78,6 +71,9 @@ void start_child(char *cmd, int index)
   }
   if (pid==0) {
     pids[index]=getpid();
+    openlog("log-conntrack", LOG_PID, LOG_USER);
+    syslog(LOG_ALERT, "STARTED PROCESS: %s", cmd);
+    closelog();
     ret=system(cmd);
     if (WIFSIGNALED(ret) &&
     (WTERMSIG(ret) == SIGINT || WTERMSIG(ret) == SIGQUIT)) {
@@ -107,6 +103,9 @@ void daemonize()
     exit(0);
   }
   /* child (daemon) continues */
+  openlog("log-conntrack", LOG_PID, LOG_USER);
+  syslog(LOG_ALERT,"STARTING CONNTRACK DAEMON");
+  closelog();
   setsid();
   for (i=getdtablesize();i>=0;--i) 
     close(i); 
@@ -221,7 +220,6 @@ int main(int argc, char *argv[])
     }
   }
     // Daemonize the connlog process. 
-    sys_logger("Starting conntrack logging daemon"); 
     daemonize();
         
     // Call to init_nbuffer  
@@ -237,6 +235,9 @@ int main(int argc, char *argv[])
     while(dead_child=wait(&status)) {
       for(i=0;i<pcounter;i++) {
         if (pids[i]==dead_child) { 
+          sprintf(cmd_to_run, cmds[i], nbuffer[i]);
+          openlog("log-conntrack", LOG_PID, LOG_USER);
+          syslog(LOG_ALERT, "PROCESS EXITED: %s ", cmd_to_run);
           nbuffer[i] += netlink_buffer_size;
           if (nbuffer[i] <= netlink_buffer_maxsize) {
             sprintf(cmd_to_run, cmds[i], nbuffer[i]);
@@ -244,7 +245,8 @@ int main(int argc, char *argv[])
             nbuffer[i] -= netlink_buffer_size; 
             sprintf(cmd_to_run, cmds[i], nbuffer[i]);
           }
-          sys_logger("Restarting conntrack logging process"); 
+          syslog(LOG_ALERT,"RESTARTING PROCESS (Increase netlink buffer to %d bytes)", nbuffer[i]); 
+          closelog(); 
           start_child(cmd_to_run,i);
         }
       }
