@@ -1,3 +1,9 @@
+vyatta-conntrack (0.18) unstable; urgency=low
+
+  * Add messages to syslog on daemon start, stop or crash.
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Tue, 13 Dec 2011 14:28:35 -0800
+
 vyatta-conntrack (0.17) unstable; urgency=low
 
   * Bug fix 7397 - Conntrack log creation and deletion.
