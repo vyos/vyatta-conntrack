@@ -1,3 +1,9 @@
+vyatta-conntrack (0.19) unstable; urgency=low
+
+  * Fix version check on boot, doesn't depend on version string
+
+ -- Daniil Baturin <daniil.baturin@vyatta.com>  Thu, 15 Dec 2011 04:16:07 +0700
+
 vyatta-conntrack (0.18) unstable; urgency=low
 
   * Add messages to syslog on daemon start, stop or crash.
