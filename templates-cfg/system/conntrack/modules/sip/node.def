@@ -1,8 +1,12 @@
 help: SIP connection tracking settings
 
-end: /bin/cli-shell-api existsEffective system conntrack modules sip disable && exit 0
+end: /bin/cli-shell-api exists system conntrack modules sip disable && exit 0
   reload=0
   sdm=2
+  defaultport=5060
+  portopt="ports="
+  portval=""
+  
   if [ -f /sys/module/nf_conntrack_sip/parameters/sip_direct_media ]; then
     sdm=$(sudo cat /sys/module/nf_conntrack_sip/parameters/sip_direct_media)
   fi
@@ -34,12 +38,20 @@ end: /bin/cli-shell-api existsEffective system conntrack modules sip disable && 
 	 fi
 	 (( numports++ ))
      done
-     portopt="ports=$portval"
      if [ $numports -gt 8 ]; then
      	echo "Error: Can not specify more than 8 ports."
 	exit 1
      fi
      reload=1
+  fi
+  if [ "$portval" != "" ]; then
+       portopt="${portopt}$portval"
+  else
+      portopt="${portopt}$defaultport"
+  fi
+
+  if [ "$COMMIT_ACTION" == "DELETE" ]; then
+      reload=1
   fi
 
   if [ -f /etc/modprobe.d/options ]; then
