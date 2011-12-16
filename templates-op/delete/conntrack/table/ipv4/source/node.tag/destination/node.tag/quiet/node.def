@@ -1,0 +1,2 @@
+help: Delete without writing to syslogs and the console  
+run: sudo ${vyatta_bindir}/sudo-users/vyatta-delete-conntrack.pl -family $4 -source_IP $6 -dest_IP $8 -quiet "true"

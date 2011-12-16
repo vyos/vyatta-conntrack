@@ -1,5 +1,6 @@
 cfgdir = $(datadir)/vyatta-cfg/templates
 opdir = $(datadir)/vyatta-op/templates
+share_perl5dir	  = $(datarootdir)/perl5/Vyatta
 curverdir = $(sysconfdir)/config-migrate/current
 modprobedir = /etc/modprobe.d
 
@@ -11,6 +12,8 @@ bin_sudo_usersdir = $(bindir)/sudo-users
 bin_sudo_users_SCRIPTS = scripts/vyatta-show-conntrack.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-delete-conntrack.pl
 
+
+share_perl5_DATA  = lib/Vyatta/ConntrackUtil.pm
 
 curver_DATA = cfg-version/conntrack@1
 

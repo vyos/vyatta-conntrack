@@ -23,11 +23,13 @@
 #
 # **** End License ****
 #
+
 use Getopt::Long;
 use XML::Simple;
 use Data::Dumper;
 use POSIX;
 use lib "/opt/vyatta/share/perl5";
+use Vyatta::ConntrackUtil;
 use Vyatta::Misc;
 use warnings;
 use strict;
@@ -368,5 +370,12 @@ if ($xml1) {
 if ($xml2) {
     $data = $xs->XMLin($xml2);
     print_xml($data, "",  $family);
+}
+
+if (!($xml1) and !($xml2)) {
+    if (!(Vyatta::ConntrackUtil::check_for_conntrack_hooks())) {
+        #Connection tracking is being used
+        die "\nWarning: Connection tracking is not enabled\n\n"; 
+    }
 }
 # end of file
