@@ -1,9 +1,6 @@
 cfgdir = $(datadir)/vyatta-cfg/templates
 opdir = $(datadir)/vyatta-op/templates
-<<<<<<< HEAD
 share_perl5dir	  = $(datarootdir)/perl5/Vyatta
-=======
->>>>>>> 7b98a85b8b777182e698d0c2c4e668fa90245555
 curverdir = $(sysconfdir)/config-migrate/current
 modprobedir = /etc/modprobe.d
 
