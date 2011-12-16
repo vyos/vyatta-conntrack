@@ -1,3 +1,14 @@
+vyatta-conntrack (0.20) unstable; urgency=low
+
+  [ Daniil Baturin ]
+  * Add default value for SIP port.
+  * Dirty hack for SIP port option.
+
+  [ Gaurav Sinha ]
+  * Bug 7676: including unstaged changes for 7677
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Thu, 15 Dec 2011 17:26:32 -0800
+
 vyatta-conntrack (0.19) unstable; urgency=low
 
   * Fix version check on boot, doesn't depend on version string
