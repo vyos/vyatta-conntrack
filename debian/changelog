@@ -1,3 +1,9 @@
+vyatta-conntrack (0.21) unstable; urgency=low
+
+  * Fixing broken build as a result of merge
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Thu, 15 Dec 2011 17:46:10 -0800
+
 vyatta-conntrack (0.20) unstable; urgency=low
 
   [ Daniil Baturin ]
