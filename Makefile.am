@@ -1,13 +1,24 @@
 cfgdir = $(datadir)/vyatta-cfg/templates
 opdir = $(datadir)/vyatta-op/templates
+<<<<<<< HEAD
 share_perl5dir	  = $(datarootdir)/perl5/Vyatta
+=======
+>>>>>>> 7b98a85b8b777182e698d0c2c4e668fa90245555
 curverdir = $(sysconfdir)/config-migrate/current
 modprobedir = /etc/modprobe.d
+
+vprefix = /opt/vyatta
+vsbindir = $(vprefix)/sbin
+
+vsbin_PROGRAMS = src/vyatta-conntrack-logging
+vyatta_conntrack_logging_SOURCES = vyatta-conntrack-logging.c
 
 checkparamsonrebootdir = $(bindir)/sudo-users/check-params-on-reboot.d
 checkparamsonreboot_SCRIPTS =
 checkparamsonreboot_SCRIPTS += scripts/check-params-on-reboot.d/conntrack-hash-size
 
+share_perl5_DATA = lib/Vyatta/Conntrack/Config.pm
+sbin_SCRIPTS = scripts/vyatta-update-conntrack-log.pl
 bin_sudo_usersdir = $(bindir)/sudo-users
 bin_sudo_users_SCRIPTS = scripts/vyatta-show-conntrack.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-delete-conntrack.pl

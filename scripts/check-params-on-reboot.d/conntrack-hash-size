@@ -6,10 +6,10 @@
 BOOTFILE=$1
 
 # Obtain firewall config version
-version=`tail -n 2 $BOOTFILE | sed -n 's/.*\(firewall\@[0-9]\).*/\1/; h; x;p;q' | awk -F '@' '{print $2}'`
+version=`grep "=== vyatta-config-version:" $BOOTFILE | sed -n 's/.*\(firewall\@[0-9]\).*/\1/; h; x;p;q' | awk -F '@' '{print $2}'`
 
 if [ -z $version ]; then
-    echo "Warning: could not determine firewall config version. Conntrack hash size will not be updated."
+    logger -s "Warning: could not determine firewall config version. Conntrack hash size will not be updated."
     exit 1
 fi
 

@@ -1,3 +1,21 @@
+vyatta-conntrack (0.19) unstable; urgency=low
+
+  * Fix version check on boot, doesn't depend on version string
+
+ -- Daniil Baturin <daniil.baturin@vyatta.com>  Thu, 15 Dec 2011 04:16:07 +0700
+
+vyatta-conntrack (0.18) unstable; urgency=low
+
+  * Add messages to syslog on daemon start, stop or crash.
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Tue, 13 Dec 2011 14:28:35 -0800
+
+vyatta-conntrack (0.17) unstable; urgency=low
+
+  * Bug fix 7397 - Conntrack log creation and deletion.
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Tue, 13 Dec 2011 02:50:50 -0800
+
 vyatta-conntrack (0.16) unstable; urgency=low
 
   * Bug 7680: Fixed sentence displayed in deletion
