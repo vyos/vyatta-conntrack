@@ -1,3 +1,9 @@
+vyatta-conntrack (0.22) unstable; urgency=low
+
+  * Resolved merge errors from Makefile.
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Fri, 16 Dec 2011 04:22:07 -0800
+
 vyatta-conntrack (0.21) unstable; urgency=low
 
   * Fixing broken build as a result of merge
