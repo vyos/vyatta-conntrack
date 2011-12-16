@@ -23,7 +23,7 @@
 # **** End License ****
 #
 
-package Vyatta::ConntrackUtil;
+package Vyatta::Conntrack::ConntrackUtil;
 use base qw(Exporter);
 our @EXPORT = qw(check_for_conntrack_hooks);
 
