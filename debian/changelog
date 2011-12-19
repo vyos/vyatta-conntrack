@@ -1,3 +1,9 @@
+vyatta-conntrack (0.24) unstable; urgency=low
+
+  * Improved validation of command syntax.
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Mon, 19 Dec 2011 15:04:30 -0800
+
 vyatta-conntrack (0.23) unstable; urgency=low
 
   * Updating references to ConntrackUtil perl module
