@@ -1,35 +1,3 @@
 help: Log connection tracking events per protocol
 priority: 219 # failure at log shouldnt fail conntrack 
-end:
-if [[ ${COMMIT_ACTION} != 'DELETE' ]]
-then
-  declare -a ARR;
-  declare -a EVENTS;
-  declare -a STATES;
-  eval "ARR=($(cli-shell-api listNodes system conntrack log))";
-  if [ "${#ARR[@]}" == "0" ]; then
-    echo Protocol must be specified for log;
-    exit 1;
-  fi
-  for var in "${ARR[@]}"
-  do
-    eval "EVENTS=($(cli-shell-api listNodes system conntrack log $var))";
-    if [ "${#EVENTS[@]}" == "0" ]; then
-      echo Event must be specified for specified protocol $var;
-      exit 1;
-    fi
-    if [ "$var" == "tcp" ]; then
-      for i in "${EVENTS[@]}"
-      do
-        if [ "$i" == "update" ]; then
-          eval "STATES=($(cli-shell-api listNodes system conntrack log $var $i))";
-          if [ "${#STATES[@]}" == "0" ]; then
-            echo State must be specified for specified protocol-event $var $i;
-            exit 1;
-          fi
-        fi
-      done
-    fi
-  done
-fi
-sudo /opt/vyatta/sbin/vyatta-update-conntrack-log.pl
+end: sudo /opt/vyatta/sbin/vyatta-update-conntrack-log.pl

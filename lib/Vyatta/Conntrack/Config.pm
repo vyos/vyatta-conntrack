@@ -9,10 +9,15 @@ use Vyatta::TypeChecker;
 use NetAddr::IP;
 
 my %fields = (
+   _udp		=> undef,
+   _tcp 	=> undef,
+   _icmp	=> undef,
+   _other	=> undef, 
    _udp_new     => undef,
    _udp_update  => undef,
    _udp_destroy => undef,
    _tcp_new	=> undef, 
+   _tcp_update	=> undef, 
    _tcp_srec	=> undef, 
    _tcp_est	=> undef, 
    _tcp_fwait   => undef, 
@@ -55,6 +60,10 @@ sub setup {
   } else {
     $self->{_is_empty} = 0;
   }
+  if ( $config->exists('udp') ) { $self->{_udp} = 1; }
+  if ( $config->exists('tcp') ) { $self->{_tcp} = 1; }
+  if ( $config->exists('icmp') ) { $self->{_icmp} = 1; }
+  if ( $config->exists('other') ) { $self->{_other} = 1; }
   if ( $config->exists('udp new') ) { $self->{_udp_new} = 1; }
   if ( $config->exists('udp update') ) { $self->{_udp_update} = 1; }
   if ( $config->exists('udp destroy') ) { $self->{_udp_destroy} = 1; }
@@ -65,6 +74,7 @@ sub setup {
   if ( $config->exists('other update') ) { $self->{_other_update} = 1; }
   if ( $config->exists('other destroy') ) { $self->{_other_destroy} = 1; }
   if ( $config->exists('tcp new') ) { $self->{_tcp_new} = 1; }
+  if ( $config->exists('tcp update') ) { $self->{_tcp_update} = 1; }
   if ( $config->exists('tcp update syn-received') ) { $self->{_tcp_srec} = 1; }
   if ( $config->exists('tcp update established') ) { $self->{_tcp_est} = 1; }
   if ( $config->exists('tcp update fin-wait') ) { $self->{_tcp_fwait} = 1; }
@@ -86,6 +96,10 @@ sub setupOrig {
   } else {
     $self->{_is_empty} = 0;
   }
+  if ( $config->existsOrig('udp') ) { $self->{_udp} = 1; }
+  if ( $config->existsOrig('tcp') ) { $self->{_tcp} = 1; }
+  if ( $config->existsOrig('icmp') ) { $self->{_icmp} = 1; }
+  if ( $config->existsOrig('other') ) { $self->{_other} = 1; }
   if ( $config->existsOrig('udp new') ) { $self->{_udp_new} = 1; }
   if ( $config->existsOrig('udp update') ) { $self->{_udp_update} = 1; }
   if ( $config->existsOrig('udp destroy') ) { $self->{_udp_destroy} = 1; }
@@ -96,6 +110,7 @@ sub setupOrig {
   if ( $config->existsOrig('other update') ) { $self->{_other_update} = 1; }
   if ( $config->existsOrig('other destroy') ) { $self->{_other_destroy} = 1; }
   if ( $config->existsOrig('tcp new') ) { $self->{_tcp_new} = 1; }
+  if ( $config->existsOrig('tcp update') ) { $self->{_tcp_update} = 1; }
   if ( $config->existsOrig('tcp update syn-received') ) { $self->{_tcp_srec} = 1; }
   if ( $config->existsOrig('tcp update established') ) { $self->{_tcp_est} = 1; }
   if ( $config->existsOrig('tcp update fin-wait') ) { $self->{_tcp_fwait} = 1; }
@@ -113,10 +128,15 @@ sub isEmpty {
 sub isDifferentFrom {
   my ($this, $that) = @_;
   no warnings qw(uninitialized); 
+  return 1 if ($this->{_udp} ne $that->{_udp});
+  return 1 if ($this->{_tcp} ne $that->{_tcp});
+  return 1 if ($this->{_icmp} ne $that->{_icmp});
+  return 1 if ($this->{_other} ne $that->{_other});
   return 1 if ($this->{_udp_new} ne $that->{_udp_new});
   return 1 if ($this->{_udp_update} ne $that->{_udp_update});
   return 1 if ($this->{_udp_destroy} ne $that->{_udp_destroy});
   return 1 if ($this->{_tcp_new} ne $that->{_tcp_new});
+  return 1 if ($this->{_tcp_update} ne $that->{_tcp_update});
   return 1 if ($this->{_tcp_srec} ne $that->{_tcp_srec});
   return 1 if ($this->{_tcp_est} ne $that->{_tcp_est});
   return 1 if ($this->{_tcp_fwait} ne $that->{_tcp_fwait});
@@ -136,25 +156,55 @@ sub isDifferentFrom {
 sub get_command {
   my ($self) = @_;
   my $cmd = "/opt/vyatta/sbin/vyatta-conntrack-logging";
-
-  if( $self->{_udp_new} ) { $cmd .= " -p udp -e NEW"; }
-  if( $self->{_udp_update} ) { $cmd .= " -p udp -e UPDATES"; }
-  if( $self->{_udp_destroy} ) { $cmd .= " -p udp -e DESTROY"; }
-  if( $self->{_icmp_new} ) { $cmd .= " -p icmp -e NEW"; }
-  if( $self->{_icmp_update} ) { $cmd .= " -p icmp -e UPDATES"; }
-  if( $self->{_icmp_destroy} ) { $cmd .= " -p icmp -e DESTROY"; }
-  if( $self->{_other_new} ) { $cmd .= " -p other p -e NEW"; }
-  if( $self->{_other_update} ) { $cmd .= " -p other -e UPDATES"; }
-  if( $self->{_other_destroy} ) { $cmd .= " -p other -e DESTROY"; }
-  if( $self->{_tcp_new} ) { $cmd .= " -p tcp -e NEW"; }
-  if( $self->{_tcp_srec} ) { $cmd .= " -p tcp -e UPDATES -s SYN_RECV"; }
-  if( $self->{_tcp_est} ) { $cmd .= " -p tcp -e UPDATES -s ESTABLISHED"; }
-  if( $self->{_tcp_fwait} ) { $cmd .= " -p tcp -e UPDATES -s FIN_WAIT"; }
-  if( $self->{_tcp_cwait} ) { $cmd .= " -p tcp -e UPDATES -s CLOSE_WAIT"; }
-  if( $self->{_tcp_twait} ) { $cmd .= " -p tcp -e UPDATES -s TIME_WAIT"; }
-  if( $self->{_tcp_lack} ) { $cmd .= " -p tcp -e UPDATES -s LAST_ACK"; }
-  if( $self->{_tcp_destroy} ) { $cmd .= " -p tcp -e DESTROY"; }
-  return ($cmd);
+  if( $self->{_udp} ) {
+    if ( $self->{_udp_new} || $self->{_udp_update} || $self->{_udp_destroy} ) { 
+      if( $self->{_udp_new} ) { $cmd .= " -p udp -e NEW"; }
+      if( $self->{_udp_update} ) { $cmd .= " -p udp -e UPDATES"; }
+      if( $self->{_udp_destroy} ) { $cmd .= " -p udp -e DESTROY"; }
+    } else {
+      return (undef, 'Must specify "Event" for protocol udp');
+    }
+  }
+  if( $self->{_icmp} ) {
+    if ( $self->{_icmp_new} || $self->{_icmp_update} || $self->{_icmp_destroy} ) { 
+      if( $self->{_icmp_new} ) { $cmd .= " -p icmp -e NEW"; }
+      if( $self->{_icmp_update} ) { $cmd .= " -p icmp -e UPDATES"; }
+      if( $self->{_icmp_destroy} ) { $cmd .= " -p icmp -e DESTROY"; }
+    } else {
+      return (undef, 'Must specify "Event" for protocol icmp');
+    }
+  }
+  if( $self->{_other} ) {
+    if ( $self->{_other_new} || $self->{_other_update} || $self->{_other_destroy} ) { 
+      if( $self->{_other_new} ) { $cmd .= " -p other p -e NEW"; }
+      if( $self->{_other_update} ) { $cmd .= " -p other -e UPDATES"; }
+      if( $self->{_other_destroy} ) { $cmd .= " -p other -e DESTROY"; }
+    } else {
+      return (undef, 'Must specify "Event" for other protocols');
+    }
+  }
+  if( $self->{_tcp} ) {
+    if ( $self->{_tcp_new} || $self->{_tcp_update} || $self->{_tcp_destroy} ) { 
+      if( $self->{_tcp_new} ) { $cmd .= " -p tcp -e NEW"; }
+      if( $self->{_tcp_destroy} ) { $cmd .= " -p tcp -e DESTROY"; }
+      if( $self->{_tcp_update} ) {
+        if ( $self->{_tcp_srec} || $self->{_tcp_est} || $self->{_tcp_fwait} ||
+        $self->{_tcp_cwait} || $self->{_tcp_twait} || $self->{_tcp_lack} ) { 
+          if( $self->{_tcp_srec} ) { $cmd .= " -p tcp -e UPDATES -s SYN_RECV"; }
+          if( $self->{_tcp_est} ) { $cmd .= " -p tcp -e UPDATES -s ESTABLISHED"; }
+          if( $self->{_tcp_fwait} ) { $cmd .= " -p tcp -e UPDATES -s FIN_WAIT"; }
+          if( $self->{_tcp_cwait} ) { $cmd .= " -p tcp -e UPDATES -s CLOSE_WAIT"; }
+          if( $self->{_tcp_twait} ) { $cmd .= " -p tcp -e UPDATES -s TIME_WAIT"; }
+          if( $self->{_tcp_lack} ) { $cmd .= " -p tcp -e UPDATES -s LAST_ACK"; }
+        } else {
+          return (undef, 'Must specify "State" for protocol tcp and event update');
+        }
+      }
+    } else {
+      return (undef, 'Must specify "Event" for protocol tcp');
+    }
+  } 
+  return ($cmd, undef);
 }
 
 sub kill_daemon {
@@ -170,7 +220,7 @@ sub kill_daemon {
   # kill daemon and its child processes 
     system("kill -HUP -`$pid` >&/dev/null");
     if ($? >> 8) {
-        print STDERR "Conntrack Logging: Failed to stop daemon.\n";
+        print STDERR "Conntrack logging error: Failed to stop daemon.\n";
         exit 1;
     }
   return; 

@@ -19,7 +19,7 @@ if (!(Vyatta::Conntrack::ConntrackUtil::check_for_conntrack_hooks())) {
 
 if (!($config->isDifferentFrom($oconfig))) {
   if ($config->isEmpty()) {
-    print STDERR "Empty Configuration\n";
+    print STDERR "Conntrack logging error: Empty Configuration\n";
     exit 1;
   }
   # config not changed. do nothing.
@@ -31,19 +31,23 @@ if ($config->isEmpty()) {
   Vyatta::Conntrack::Config::kill_daemon();
   # delete the .lock and .log file getting generated
   `rm -f $pfile`;
-   exit 0;
+  exit 0;
 }
 
-my $cmd = $config->get_command();
-if ($cmd) {
+my ($cmd, $err) = $config->get_command();
+if (defined ($cmd)) {
   # First stop the daemon and restart with config 
   Vyatta::Conntrack::Config::kill_daemon();
   `rm -f $pfile`;
-   system("$cmd");
-   if ($? >> 8) {
-     print STDERR "Failed to start conntrack logging daemon";
-     exit 1;
-   }
+  system("$cmd");
+  if ($? >> 8) {
+    print STDERR "Failed to start conntrack logging daemon";
+    exit 1;
+  }
+}
+if (defined ($err)) {
+  print STDERR "Conntrack logging error: $err\n";
+  exit 1;
 }
 
 exit 0;
