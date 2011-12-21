@@ -1,3 +1,9 @@
+vyatta-conntrack (0.25) unstable; urgency=low
+
+  * Corrected incorrect malloc.
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Wed, 21 Dec 2011 10:16:27 -0800
+
 vyatta-conntrack (0.24) unstable; urgency=low
 
   * Improved validation of command syntax.
