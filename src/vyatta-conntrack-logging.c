@@ -6,6 +6,8 @@ Usage:		./vyatta-conntrack-logging
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <unistd.h>
@@ -126,7 +128,6 @@ void daemonize()
 
 int main(int argc, char *argv[])
 {
-  FILE *logfile;
   int other=0;
   int i, pid;
   char *conn="conntrack -E";
@@ -173,7 +174,7 @@ int main(int argc, char *argv[])
             if (other == 1) {
               snprintf(temp_cmd, sizeof (cmd) - length, "%s%s%s%s%s%s%s%s", " -e ", 
               argv[i+1], " -o id", " -b %d", " | ", fother, " | ", logger);
-              cmds[pcounter] = malloc(strlen+1);
+              cmds[pcounter] = malloc(strlen(cmd)+1);
               strcpy(cmds[pcounter],cmd); 
               pcounter++;
             } else if ((strncmp(argv[i-1], "tcp",strlen(argv[i-1]))==0) &&
@@ -182,7 +183,7 @@ int main(int argc, char *argv[])
             } else {
                 snprintf(temp_cmd, sizeof (cmd) - length, "%s%s%s%s%s%s", " -e ", 
                 argv[i+1], " -o id", " -b %d", " | ", logger);
-                cmds[pcounter] = malloc(strlen+1); 
+                cmds[pcounter] = malloc(strlen(cmd)+1); 
                 strcpy(cmds[pcounter],cmd);
                 pcounter++;
             }
@@ -208,7 +209,7 @@ int main(int argc, char *argv[])
           strlen(argv[i+1])) == 0)) {
             snprintf(temp_cmd, sizeof (cmd) - length, "%s%s%s%s%s%s", " --state ",
             argv[i+1], " -o id", " -b %d", " | ", logger);
-            cmds[pcounter] = malloc(strlen+1); 
+            cmds[pcounter] = malloc(strlen(cmd)+1); 
             strcpy(cmds[pcounter],cmd);
             pcounter++;
             length = strlen (cmd);
