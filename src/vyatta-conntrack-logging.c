@@ -13,6 +13,7 @@ Usage:		./vyatta-conntrack-logging
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 #include <error.h>
 #include <syslog.h>
 
@@ -63,7 +64,6 @@ void signal_handler(sig)
 void start_child(char *cmd, int index) 
 {
   pid_t pid;
-  int west;
   int ret;
   
   pid=fork();
@@ -129,7 +129,7 @@ void daemonize()
 int main(int argc, char *argv[])
 {
   int other=0;
-  int i, pid;
+  int i;
   char *conn="conntrack -E";
   char *logger="logger -t log-conntrack -p daemon.notice";
   char *fother="grep -vE 'tcp|udp|icmp'"; 
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
     }
     pid_t dead_child;
     int status; 
-    while(dead_child=wait(&status)) {
+    while( (dead_child=wait(&status)) != -1) {
       for(i=0;i<pcounter;i++) {
         if (pids[i]==dead_child) { 
           sprintf(cmd_to_run, cmds[i], nbuffer[i]);
@@ -246,12 +246,13 @@ int main(int argc, char *argv[])
             nbuffer[i] -= netlink_buffer_size; 
             sprintf(cmd_to_run, cmds[i], nbuffer[i]);
           }
-          syslog(LOG_ALERT,"RESTARTING PROCESS (Increase netlink buffer to %d bytes)", nbuffer[i]); 
+          syslog(LOG_ALERT,"RESTARTING PROCESS (Increase netlink buffer to %ld bytes)", nbuffer[i]); 
           closelog(); 
           start_child(cmd_to_run,i);
         }
       }
     }
+    return 0;
 }
 
 /* EOF */
