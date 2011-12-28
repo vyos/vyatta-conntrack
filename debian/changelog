@@ -1,3 +1,13 @@
+vyatta-conntrack (0.26) unstable; urgency=low
+
+  [ Stephen Hemminger ]
+  * Fix compiler warnings
+
+  [ Daniil Baturin ]
+  * Something looking like a real fix for SIP port update problem.
+
+ -- Daniil Baturin <daniil.baturin@vyatta.com>  Thu, 29 Dec 2011 01:27:44 +0700
+
 vyatta-conntrack (0.25) unstable; urgency=low
 
   * Corrected incorrect malloc.
