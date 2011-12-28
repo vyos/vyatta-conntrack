@@ -6,7 +6,8 @@ end: /bin/cli-shell-api exists system conntrack modules sip disable && exit 0
   defaultport=5060
   portopt="ports="
   portval=""
-  
+  portpath="system conntrack modules sip port"
+
   if [ -f /sys/module/nf_conntrack_sip/parameters/sip_direct_media ]; then
     sdm=$(sudo cat /sys/module/nf_conntrack_sip/parameters/sip_direct_media)
   fi
@@ -42,15 +43,15 @@ end: /bin/cli-shell-api exists system conntrack modules sip disable && exit 0
      	echo "Error: Can not specify more than 8 ports."
 	exit 1
      fi
-     reload=1
   fi
+
   if [ "$portval" != "" ]; then
-       portopt="${portopt}$portval"
+      portopt="${portopt}$portval"
   else
       portopt="${portopt}$defaultport"
   fi
 
-  if [ "$COMMIT_ACTION" == "DELETE" ]; then
+  if [ "`cli-shell-api returnValues $portpath`" != "`cli-shell-api returnEffectiveValues $portpath`" ]; then
       reload=1
   fi
 
@@ -71,3 +72,4 @@ end: /bin/cli-shell-api exists system conntrack modules sip disable && exit 0
     sudo modprobe nf_conntrack_sip
     sudo modprobe nf_nat_sip
   fi
+
