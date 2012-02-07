@@ -21,6 +21,7 @@ sbin_SCRIPTS = scripts/vyatta-update-conntrack-log.pl
 bin_sudo_usersdir = $(bindir)/sudo-users
 bin_sudo_users_SCRIPTS = scripts/vyatta-show-conntrack.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-delete-conntrack.pl
+bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-timeouts.pl
 
 curver_DATA = cfg-version/conntrack@1
 
