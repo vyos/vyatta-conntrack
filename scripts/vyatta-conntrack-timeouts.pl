@@ -12,6 +12,10 @@ use Getopt::Long;
 use Vyatta::Zone;
 use Sys::Syslog qw(:standard :macros);
 
+#for future use when v6 timeouts need to be set
+my %cmd_hash = ( 'ipv4'        => 'iptables',
+		 'ipv6'   => 'ip6tables');
+
 my ($create, $delete, $update);
 
 GetOptions("create=s"        => \$create,
@@ -19,16 +23,17 @@ GetOptions("create=s"        => \$create,
            "update=s"        => \$update,
 );
 
-if ($create and ($create eq 'true')) {
-    print "create\n";
-    # create a nfct-timeout policy based on protocol specific timers
-    # check if the rule has protocol configured
-    # if configured, check what the protocol is and get the appropriate timers. 
+if (($create eq 'true') or ($update eq 'true')) {
+    update_config();
 }
 
-if ($delete and ($delete eq 'true')) {
-    print "delete";
+sub update_config {
+  my $config = new Vyatta::Config;
+  my %rules = (); #hash of timeout config rules  
+  my $iptables_cmd = $cmd_hash{'ipv4'};
+
+  $config->setLevel("system conntrack timeout custom rule");
+  %rules = $config->listNodeStatus();
+  print %rules;
 }
-if ($update and ($update eq 'true')) {
-    print "update";
-}
+
