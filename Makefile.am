@@ -16,6 +16,8 @@ checkparamsonreboot_SCRIPTS += scripts/check-params-on-reboot.d/conntrack-hash-s
 
 share_perl5_DATA = lib/Vyatta/Conntrack/Config.pm
 share_perl5_DATA  += lib/Vyatta/Conntrack/ConntrackUtil.pm
+share_perl5_DATA  += lib/Vyatta/Conntrack/RuleCT.pm
+share_perl5_DATA  += lib/Vyatta/Conntrack/AddressFilterCT.pm
 
 sbin_SCRIPTS = scripts/vyatta-update-conntrack-log.pl
 bin_sudo_usersdir = $(bindir)/sudo-users

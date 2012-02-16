@@ -5,9 +5,8 @@ use warnings;
 use strict;
 
 use Vyatta::Config;
-use Vyatta::IpTables::Rule;
-use Vyatta::IpTables::AddressFilter;
-use Vyatta::IpTables::Mgr;
+use Vyatta::Conntrack::RuleCT;
+use Vyatta::Conntrack::AddressFilterCT;
 use Getopt::Long;
 use Vyatta::Zone;
 use Sys::Syslog qw(:standard :macros);
@@ -23,9 +22,7 @@ GetOptions("create=s"        => \$create,
            "update=s"        => \$update,
 );
 
-if (($create eq 'true') or ($update eq 'true')) {
-    update_config();
-}
+update_config();
 
 sub update_config {
   my $config = new Vyatta::Config;
@@ -35,5 +32,15 @@ sub update_config {
   $config->setLevel("system conntrack timeout custom rule");
   %rules = $config->listNodeStatus();
   print %rules;
+  foreach my $rule (sort keys %rules) { 
+    if ("$rules{$rule}" eq 'static') {
+    } elsif ("$rules{$rule}" eq 'added') {      
+      my $node = new Vyatta::Conntrack::RuleCT;
+      $node->setup("system conntrack timeout custom rule $rule");
+      $node->print();
+    } elsif ("$rules{$rule}" eq 'changed') {
+    } elsif ("$rules{$rule}" eq 'deleted'){
+    }  
+  }
 }
 
