@@ -2,10 +2,10 @@ package Vyatta::Conntrack::RuleCT;
 
 use strict;
 use Vyatta::Config;
-require Vyatta::Conntrack::AddressFilterCT;
+require Vyatta::IpTables::AddressFilter;
 
-my $src = new Vyatta::Conntrack::AddressFilterCT;
-my $dst = new Vyatta::Conntrack::AddressFilterCT;
+my $src = new Vyatta::IpTables::AddressFilter;
+my $dst = new Vyatta::IpTables::AddressFilter;
 
 my %fields = (
   _rule_number => undef,
@@ -52,8 +52,8 @@ sub setupDummy {
   my ($self, $level) = @_;
 
   %{$self} = %dummy_rule;
-  $src = new Vyatta::Conntrack::AddressFilterCT;
-  $dst = new Vyatta::Conntrack::AddressFilterCT;
+  $src = new Vyatta::IpTables::AddressFilter;
+  $dst = new Vyatta::IpTables::AddressFilter;
 
   # set the default policy
   my $config = new Vyatta::Config;

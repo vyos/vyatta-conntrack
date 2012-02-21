@@ -6,7 +6,7 @@ use strict;
 
 use Vyatta::Config;
 use Vyatta::Conntrack::RuleCT;
-use Vyatta::Conntrack::AddressFilterCT;
+use Vyatta::IpTables::AddressFilter;
 use Getopt::Long;
 use Vyatta::Zone;
 use Sys::Syslog qw(:standard :macros);
