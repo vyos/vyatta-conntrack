@@ -9,23 +9,29 @@ my $dst = new Vyatta::Conntrack::AddressFilterCT;
 
 my %fields = (
   _rule_number => undef,
-  _protocol    => undef,
-  _state       => {
-                    _established => undef,
-                    _new         => undef,
-                    _related     => undef,
-                    _invalid     => undef,
+  _protocol    => {
+                   _tcp => {
+                         _close => undef,
+                         _close_wait => undef,
+                         _syn_sent => undef,
+                           },
+                   _udp => undef,
+                   _other => undef,
+                   _icmp => undef , 
                   },
 );
 
 my %dummy_rule = (
   _rule_number => 10000,
-  _protocol    => "all",
-  _state       => {
-                    _established => undef,
-                    _new         => undef,
-                    _related     => undef,
-                    _invalid     => undef,
+  _protocol    => {
+                   _tcp => {
+                         _close => undef,
+                         _close_wait => undef,
+                         _syn_sent => undef,
+                           },
+                   _udp => undef,
+                   _other => undef,
+                   _icmp => undef , 
                   },
 );
 
@@ -62,11 +68,6 @@ sub setup_base {
 
   $self->{_rule_number} = $config->returnParent("..");
   $self->{_protocol}    = $config->$val_func("protocol");
-  $self->{_state}->{_established} = $config->$val_func("state established");
-  $self->{_state}->{_new}         = $config->$val_func("state new");
-  $self->{_state}->{_related}     = $config->$val_func("state related");
-  $self->{_state}->{_invalid}     = $config->$val_func("state invalid");
-
   $src->$addr_setup("$level source");
   $dst->$addr_setup("$level destination");
 

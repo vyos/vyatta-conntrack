@@ -39,7 +39,15 @@ sub update_config {
       $node->setup("system conntrack timeout custom rule $rule");
       $node->print();
     } elsif ("$rules{$rule}" eq 'changed') {
-    } elsif ("$rules{$rule}" eq 'deleted'){
+    } elsif ("$rules{$rule}" eq 'deleted') {
+#        my $node = new Vyatta::Conntrack::RuleCT;
+#      $node->setupOrig("system conntrack timeout custom rule $rule");
+#      my $ipt_rules = $node->get_num_ipt_rules();
+#      for (1 .. $ipt_rules) {
+#        print "deleting 1\n";
+#        run_cmd("$iptables_cmd -t $table --delete $name $iptablesrule");
+#        die "$iptables_cmd error: $! - $rule" if ($? >> 8);
+#      }
     }  
   }
 }
