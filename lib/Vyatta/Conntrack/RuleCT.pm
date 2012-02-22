@@ -1,3 +1,8 @@
+# 
+# The timeouts are implemented using nfct-timeout policies that are
+# later applied to the corresponding iptables rules. The rules and 
+# policies are distinguished based on the rule number.   
+
 package Vyatta::Conntrack::RuleCT;
 
 use strict;
@@ -26,6 +31,7 @@ my %fields = (
      },
      _other => undef,
      _icmp => undef , 
+     _comment => undef,
 );
 
 my %dummy_rule = (
@@ -47,6 +53,7 @@ my %dummy_rule = (
      },
      _other => undef,
      _icmp => undef , 
+     _comment => undef,
 );
 
 my $DEBUG = 'false';
@@ -79,14 +86,8 @@ sub setup_base {
   my $config = new Vyatta::Config;
 
   $config->setLevel("$level");
-
+  $self->{_comment} = $level;
   $self->{_rule_number} = $config->returnParent("..");
-  if (($config->existsOrig("protocol tcp")) or
-      ($config->existsOrig("protocol udp")) or
-      ($config->existsOrig("protocol icmp")) or 
-      ($config->existsOrig("protocol other"))) {
-      die "Error: Only one protocol per rule\n"
-  }
   if ($config->$exists_func("protocol tcp")) {
     $self->{_protocol} = "tcp";
     $self->{_tcp}->{_close} = $config->$val_func("protocol tcp close"); 
@@ -142,6 +143,39 @@ sub print {
   print "$self->{_tcp}->{_fin_wait}\n";
   print "$self->{_tcp}->{_syn_sent}\n";
   print "$self->{_tcp}->{_syn_recv}\n";
+  print "Comment is: $self->{_comment}\n"; 
+}
+
+# return a string that has the nfct-timeout command to create
+# a timeout policy.  
+sub get_policy_command {
+  my ($self ) = @_;
+  my $command;
+  my @level_nodes = split (' ', $self->{_comment});
+  $command .= "policy$level_nodes[2]-$level_nodes[5]";
+  if ($self->{_protocol} eq 'tcp') {
+    $command .= " tcp";
+    $command .= " close $self->{_tcp}->{_close}"; 
+    $command .= " close-wait $self->{_tcp}->{_close_wait}";
+    $command .= " time-wait $self->{_tcp}->{_time_wait}"; 
+    $command .= " syn-recv $self->{_tcp}->{_syn_recv}"; 
+    $command .= " syn-sent $self->{_tcp}->{_syn_sent}"; 
+    $command .= " last-ack $self->{_tcp}->{_last_ack}"; 
+    $command .= " fin-wait $self->{_tcp}->{_fin_wait}"; 
+    $command .= " established $self->{_tcp}->{_established}"; 
+  } elsif ($self->{_protocol} eq 'udp') {
+      $command .= " udp";
+      $command .= " other $self->{_udp}->{_other}";
+      $command .= " stream $self->{_udp}->{_stream}";
+  } elsif ($self->{_protocol} eq 'icmp') {
+      $command .= " icmp";
+      $command .= " icmp $self->{_icmp}";
+  } elsif ($self->{_protocol} eq 'other') {  
+      $command .= " other";
+      $command .= " other $self->{_other}";
+    }
+  print "\n $command\n\n";
+  return $command;
 }
 
 sub rule {
@@ -151,7 +185,8 @@ sub rule {
 
   # set CLI rule num as comment
   my @level_nodes = split (' ', $self->{_comment});
-  $rule .= "-m comment --comment \"$level_nodes[2]-$level_nodes[4]\" ";
+  $rule .= "-m comment --comment \"$level_nodes[2]-$level_nodes[5]\" ";
+  print "rule is $rule\n";
 
   # set the protocol
   if (defined($self->{_protocol})) {
