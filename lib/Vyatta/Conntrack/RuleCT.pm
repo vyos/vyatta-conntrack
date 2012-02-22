@@ -13,12 +13,20 @@ my %fields = (
                    _tcp => {
                          _close => undef,
                          _close_wait => undef,
+                         _established => undef,
+                         _fin_wait => undef,
+                         _last_ack => undef,
                          _syn_sent => undef,
-                           },
-                   _udp => undef,
+                         _syn_recv => undef,
+                         _time_wait => undef,
+                    },
+                   _udp => {
+                       _other => undef,
+                       _stream => undef,    
+                    },
                    _other => undef,
                    _icmp => undef , 
-                  },
+                 },
 );
 
 my %dummy_rule = (
@@ -27,9 +35,17 @@ my %dummy_rule = (
                    _tcp => {
                          _close => undef,
                          _close_wait => undef,
+                         _established => undef,
+                         _fin_wait => undef,
+                         _last_ack => undef,
                          _syn_sent => undef,
-                           },
-                   _udp => undef,
+                         _syn_recv => undef,
+                         _time_wait => undef,
+                        },
+                   _udp => {
+                       _other => undef,
+                       _stream => undef,    
+                    },
                    _other => undef,
                    _icmp => undef , 
                   },
@@ -67,7 +83,25 @@ sub setup_base {
   $config->setLevel("$level");
 
   $self->{_rule_number} = $config->returnParent("..");
-  $self->{_protocol}    = $config->$val_func("protocol");
+  if (($config->existsOrig("protocol tcp")) or
+      ($config->existsOrig("protocol udp")) or
+      ($config->existsOrig("protocol icmp")) or 
+      ($config->existsOrig("protocol other"))) {
+      die "Error: Only one protocol per rule\n"
+  }
+  if ($config->$exists_func("protocol tcp")) {
+    $self->{_protocol} = "tcp";
+  } elsif ($config->$exists_func("protocol icmp")) {
+    $self->{_protocol} = "icmp";
+  } elsif ($config->$exists_func("protocol udp")) {
+    $self->{_protocol} = "udp";
+  } elsif ($config->$exists_func("protocol other")) {
+    $self->{_protocol} = "other";
+  }
+
+  print "protocol is [\n"; 
+  print $self->{_protocol}; 
+  print "]\n"; 
   $src->$addr_setup("$level source");
   $dst->$addr_setup("$level destination");
 
