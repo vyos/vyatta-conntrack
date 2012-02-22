@@ -34,14 +34,17 @@ sub update_config {
   foreach my $rule (sort keys %rules) { 
     if ("$rules{$rule}" eq 'static') {
     } elsif ("$rules{$rule}" eq 'added') {      
+      print $rules{$rule};
       my $node = new Vyatta::Conntrack::RuleCT;
       $node->setup("system conntrack timeout custom rule $rule");
       $node->print();
     } elsif ("$rules{$rule}" eq 'changed') {
+      print $rules{$rule};
       my $node = new Vyatta::Conntrack::RuleCT;
       $node->setup("system conntrack timeout custom rule $rule");
       $node->print();
     } elsif ("$rules{$rule}" eq 'deleted') {
+      print $rules{$rule};
     }  
   }
 }

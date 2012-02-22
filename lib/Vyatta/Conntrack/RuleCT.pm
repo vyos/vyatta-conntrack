@@ -9,46 +9,44 @@ my $dst = new Vyatta::IpTables::AddressFilter;
 
 my %fields = (
   _rule_number => undef,
-  _protocol    => {
-                   _tcp => {
-                         _close => undef,
-                         _close_wait => undef,
-                         _established => undef,
-                         _fin_wait => undef,
-                         _last_ack => undef,
-                         _syn_sent => undef,
-                         _syn_recv => undef,
-                         _time_wait => undef,
-                    },
-                   _udp => {
-                       _other => undef,
-                       _stream => undef,    
-                    },
-                   _other => undef,
-                   _icmp => undef , 
-                 },
+  _protocol    => undef, 
+  _tcp => {
+     _close => undef,
+     _close_wait => undef,
+     _established => undef,
+     _fin_wait => undef,
+     _last_ack => undef,
+     _syn_sent => undef,
+     _syn_recv => undef,
+     _time_wait => undef,
+     },
+     _udp => {
+     _other => undef,
+     _stream => undef,    
+     },
+     _other => undef,
+     _icmp => undef , 
 );
 
 my %dummy_rule = (
   _rule_number => 10000,
-  _protocol    => {
-                   _tcp => {
-                         _close => undef,
-                         _close_wait => undef,
-                         _established => undef,
-                         _fin_wait => undef,
-                         _last_ack => undef,
-                         _syn_sent => undef,
-                         _syn_recv => undef,
-                         _time_wait => undef,
-                        },
-                   _udp => {
-                       _other => undef,
-                       _stream => undef,    
-                    },
-                   _other => undef,
-                   _icmp => undef , 
-                  },
+  _protocol    => undef, 
+  _tcp => {
+     _close => undef,
+     _close_wait => undef,
+     _established => undef,
+     _fin_wait => undef,
+     _last_ack => undef,
+     _syn_sent => undef,
+     _syn_recv => undef,
+     _time_wait => undef,
+     },
+     _udp => {
+     _other => undef,
+     _stream => undef,    
+     },
+     _other => undef,
+     _icmp => undef , 
 );
 
 my $DEBUG = 'false';
@@ -91,17 +89,26 @@ sub setup_base {
   }
   if ($config->$exists_func("protocol tcp")) {
     $self->{_protocol} = "tcp";
+    $self->{_tcp}->{_close} = $config->$val_func("protocol tcp close"); 
+    $self->{_tcp}->{_close_wait} = $config->$val_func("protocol tcp close-wait"); 
+    $self->{_tcp}->{_time_wait} = $config->$val_func("protocol tcp time_wait"); 
+    $self->{_tcp}->{_syn_recv} = $config->$val_func("protocol tcp syn-recv"); 
+    $self->{_tcp}->{_syn_sent} = $config->$val_func("protocol tcp syn-sent"); 
+    $self->{_tcp}->{_last_ack} = $config->$val_func("protocol tcp last-ack"); 
+    $self->{_tcp}->{_fin_wait} = $config->$val_func("protocol tcp fin-wait"); 
+    $self->{_tcp}->{_established} = $config->$val_func("protocol tcp established"); 
   } elsif ($config->$exists_func("protocol icmp")) {
     $self->{_protocol} = "icmp";
+    $self->{_icmp} = $config->$val_func("protocol icmp");
   } elsif ($config->$exists_func("protocol udp")) {
     $self->{_protocol} = "udp";
+    $self->{_udp}->{_other} = $config->$val_func("protocol udp other"); 
+    $self->{_udp}->{_stream} = $config->$val_func("protocol udp stream"); 
   } elsif ($config->$exists_func("protocol other")) {
     $self->{_protocol} = "other";
+    $self->{_other} = $config->$val_func("protocol other");
   }
 
-  print "protocol is [\n"; 
-  print $self->{_protocol}; 
-  print "]\n"; 
   $src->$addr_setup("$level source");
   $dst->$addr_setup("$level destination");
 
@@ -129,7 +136,12 @@ sub print {
   print "state: $self->{_state}\n"         if defined $self->{_state};
   $src->print();
   $dst->print();
-
+  print "$self->{_tcp}->{_close}\n";
+  print "$self->{_tcp}->{_close_wait}\n";
+  print "$self->{_tcp}->{_established}\n";
+  print "$self->{_tcp}->{_fin_wait}\n";
+  print "$self->{_tcp}->{_syn_sent}\n";
+  print "$self->{_tcp}->{_syn_recv}\n";
 }
 
 sub rule {
