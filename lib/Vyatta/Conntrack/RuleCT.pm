@@ -143,7 +143,6 @@ sub print {
   print "$self->{_tcp}->{_fin_wait}\n";
   print "$self->{_tcp}->{_syn_sent}\n";
   print "$self->{_tcp}->{_syn_recv}\n";
-  print "Comment is: $self->{_comment}\n"; 
 }
 
 # return a string that has the nfct-timeout command to create
@@ -152,21 +151,41 @@ sub get_policy_command {
   my ($self ) = @_;
   my $command;
   my @level_nodes = split (' ', $self->{_comment});
-  $command .= "policy$level_nodes[2]-$level_nodes[5]";
+  $command .= "policy_$level_nodes[2]_$level_nodes[5]";
   if ($self->{_protocol} eq 'tcp') {
     $command .= " tcp";
-    $command .= " close $self->{_tcp}->{_close}"; 
-    $command .= " close-wait $self->{_tcp}->{_close_wait}";
-    $command .= " time-wait $self->{_tcp}->{_time_wait}"; 
-    $command .= " syn-recv $self->{_tcp}->{_syn_recv}"; 
-    $command .= " syn-sent $self->{_tcp}->{_syn_sent}"; 
-    $command .= " last-ack $self->{_tcp}->{_last_ack}"; 
-    $command .= " fin-wait $self->{_tcp}->{_fin_wait}"; 
-    $command .= " established $self->{_tcp}->{_established}"; 
+    if ($self->{_tcp}->{_close}) {
+      $command .= " close $self->{_tcp}->{_close}"; 
+    }
+    if ($self->{_tcp}->{_close_wait}) {
+      $command .= " close-wait $self->{_tcp}->{_close_wait}";
+    }
+    if ($self->{_tcp}->{_time_wait}) {
+      $command .= " time-wait $self->{_tcp}->{_time_wait}"; 
+    }
+    if ($self->{_tcp}->{_syn_recv}) {
+      $command .= " syn-recv $self->{_tcp}->{_syn_recv}"; 
+    }
+    if ($self->{_tcp}->{_syn_sent}) {
+      $command .= " syn-sent $self->{_tcp}->{_syn_sent}"; 
+    }
+    if ($self->{_tcp}->{_last_ack}) {
+      $command .= " last-ack $self->{_tcp}->{_last_ack}"; 
+    }
+    if ($self->{_tcp}->{_fin_wait}) {
+      $command .= " fin-wait $self->{_tcp}->{_fin_wait}"; 
+    }
+    if ($self->{_tcp}->{_established}) {
+      $command .= " established $self->{_tcp}->{_established}"; 
+    }
   } elsif ($self->{_protocol} eq 'udp') {
       $command .= " udp";
-      $command .= " other $self->{_udp}->{_other}";
-      $command .= " stream $self->{_udp}->{_stream}";
+      if ($self->{_udp}->{_other}) {
+        $command .= " other $self->{_udp}->{_other}";
+      }
+      if ($self->{_udp}->{_stream}) {
+        $command .= " stream $self->{_udp}->{_stream}";
+      }
   } elsif ($self->{_protocol} eq 'icmp') {
       $command .= " icmp";
       $command .= " icmp $self->{_icmp}";
