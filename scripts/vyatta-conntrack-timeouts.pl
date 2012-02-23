@@ -38,8 +38,9 @@ sub update_config {
       my $node = new Vyatta::Conntrack::RuleCT;
       $node->setup("system conntrack timeout custom rule $rule");
       $node->print();
-#      $node->rule();
-      $node->get_policy_command(); #nfct-tiemout command string
+      $node->rule();
+      $node->get_policy_command(); #nfct-timeout command string
+       
     } elsif ("$rules{$rule}" eq 'changed') {
       print $rules{$rule};
       my $node = new Vyatta::Conntrack::RuleCT;
