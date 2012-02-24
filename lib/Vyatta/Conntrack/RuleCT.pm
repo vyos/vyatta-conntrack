@@ -11,7 +11,7 @@ require Vyatta::IpTables::AddressFilter;
 
 my $src = new Vyatta::IpTables::AddressFilter;
 my $dst = new Vyatta::IpTables::AddressFilter;
-
+my $CTERROR = "Conntrack Timeout Error:";
 my %fields = (
   _rule_number => undef,
   _protocol    => undef, 
@@ -66,11 +66,17 @@ sub rule {
   my @level_nodes = split (' ', $self->{_comment});
   $rule .= "-m comment --comment \"$level_nodes[2]-$level_nodes[5]\" ";
   ($srcrule, $err_str) = $src->rule();
-  return ($err_str, ) if (!defined($srcrule));
+  if (defined($err_str)) {
+        Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: $err_str");
+        exit 1;
+  }
   ($dstrule, $err_str) = $dst->rule();
-  return ($err_str, ) if (!defined($dstrule));
+  if (defined($err_str)) {
+        Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: $err_str");
+        exit 1;
+  }
   $rule .= " $srcrule $dstrule ";
-  print "rule is $rule\n";
+  return $rule;
 }
 
 sub new {
