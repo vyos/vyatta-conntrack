@@ -72,16 +72,19 @@ sub remove_timeout_policy {
     my $nfct_timeout_cmd = "nfct-timeout remove $timeout_policy"; 
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
-      print "$CTERROR failed to run $iptables_cmd2\n";    
+      # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
+      #print "$CTERROR failed to run $iptables_cmd2\n";    
       #dont exit, try to clean as much. 
     }
     run_cmd($iptables_cmd1);
     if ($? >> 8) {
-      print "$CTERROR failed to run $iptables_cmd1\n";    
+      # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
+      #print "$CTERROR failed to run $iptables_cmd1\n";    
     }
     run_cmd($nfct_timeout_cmd);
     if ($? >> 8) {
-      print "$CTERROR failed to run $nfct_timeout_cmd\n";    
+      # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
+      #print "$CTERROR failed to run $nfct_timeout_cmd\n";    
     }
 }
 
@@ -95,22 +98,25 @@ sub apply_timeout_policy {
     my $iptables_cmd2 = "iptables -I OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
     run_cmd($nfct_timeout_cmd);
     if ($? >> 8) {
-      print "$CTERROR failed to run $nfct_timeout_cmd\n";    
-      exit 1; 
+       # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
+#      print "$CTERROR failed to run $nfct_timeout_cmd\n";    
+#      exit 1; 
     }
     run_cmd($iptables_cmd1);
     if ($? >> 8) {
       #cleanup the policy before exit. 
-      run_cmd("nfct-timeout remove $timeout_policy");   
-      print "$CTERROR failed to run $iptables_cmd1\n";    
-      exit 1; 
+      # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
+#      run_cmd("nfct-timeout remove $timeout_policy");   
+#      print "$CTERROR failed to run $iptables_cmd1\n";    
+#      exit 1; 
     }
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
-      run_cmd("nfct-timeout remove $timeout_policy");   
-      run_cmd("iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]");   
-      print "$CTERROR failed to run $iptables_cmd2\n";    
-      exit 1;
+      # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
+#      run_cmd("nfct-timeout remove $timeout_policy");   
+#      run_cmd("iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]");   
+#      print "$CTERROR failed to run $iptables_cmd2\n";    
+#      exit 1;
     }
 }
 
@@ -122,6 +128,13 @@ sub handle_rule_creation {
   $rule_string = $node->rule();
   $timeout_policy = $node->get_policy_command(); #nfct-timeout command string
   apply_timeout_policy($rule_string, $timeout_policy);
+}
+
+
+sub handle_rule_modification {
+  my ($rule) = @_;
+  handle_rule_deletion($rule);
+  handle_rule_creation($rule);
 }
 
 sub handle_rule_deletion {
@@ -146,8 +159,7 @@ sub update_config {
     } elsif ("$rules{$rule}" eq 'added') {      
         handle_rule_creation($rule);
     } elsif ("$rules{$rule}" eq 'changed') {
-      my $node = new Vyatta::Conntrack::RuleCT;
-      $node->setup("system conntrack timeout custom rule $rule");
+        handle_rule_modification($rule);
     } elsif ("$rules{$rule}" eq 'deleted') {
         handle_rule_deletion($rule);
     }  
