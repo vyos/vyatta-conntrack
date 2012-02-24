@@ -222,7 +222,6 @@ sub get_policy_command {
   } elsif ($self->{_protocol} eq 'other') {  
       $command .= " other $self->{_other}";
     }
-  print "\n $command\n\n";
   return $command;
 }
 

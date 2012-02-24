@@ -23,17 +23,29 @@ GetOptions("create=s"        => \$create,
 );
 
 update_config();
+
 sub remove_timeout_policy {
     my ($rule_string, $timeout_policy) = @_;
-    print "removing with $rule_string and $timeout_policy\n";
-    # function to apply the policy and then apply the policy to
-    # the iptables rule. 
-    # Do nothing as of now. 
+    my @tokens = split (' ', $timeout_policy);
+    # First remove the iptables rules before removing policy.
+    my $iptables_cmd1 = "iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd2 = "iptables -D OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $nfct_timeout_cmd = "nfct-timeout remove $timeout_policy"; 
+    print "$iptables_cmd1\n$iptables_cmd2\n";
+    print "$nfct_timeout_cmd\n";
 }
+
+# nfct-timeout create policy1 tcp established 1200 close-wait 100 fin-wait 10
+# iptables -I PREROUTING -t raw -s 1.1.1.1 -d 2.2.2.2 -j CT --timeout policy1
 sub apply_timeout_policy {
-    # function to apply the policy and then apply the policy to
-    # the iptables rule. 
-    # Do nothing as of now. 
+    my ($rule_string, $timeout_policy) = @_;
+    my $nfct_timeout_cmd = "nfct-timeout create $timeout_policy"; 
+    my @tokens = split (' ', $timeout_policy);
+    my $iptables_cmd1 = "iptables -I PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd2 = "iptables -I OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
+
+    print "$nfct_timeout_cmd\n";
+    print "$iptables_cmd1\n$iptables_cmd2\n";
 }
 
 
