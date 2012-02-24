@@ -11,7 +11,6 @@ require Vyatta::IpTables::AddressFilter;
 
 my $src = new Vyatta::IpTables::AddressFilter;
 my $dst = new Vyatta::IpTables::AddressFilter;
-my $CTERROR = "Conntrack Timeout Error:";
 my %fields = (
   _rule_number => undef,
   _protocol    => undef, 
