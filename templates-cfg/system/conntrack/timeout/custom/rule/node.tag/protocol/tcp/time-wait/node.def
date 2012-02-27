@@ -1,6 +1,6 @@
 type: u32
 
-help: TCP TIME-WAIT timeout in seconds
+help: TCP TIME-WAIT timeout for matching flow(s) in seconds
 
 val_help: u32:1-21474836; TCP TIME-WAIT timeout in seconds
 

@@ -1,6 +1,6 @@
 type: u32
 
-help: TCP ESTABLISHED timeout in seconds
+help: TCP ESTABLISHED timeout for matching flow(s) in seconds
 
 val_help: u32:1-21474836; TCP ESTABLISHED timeout in seconds
 
