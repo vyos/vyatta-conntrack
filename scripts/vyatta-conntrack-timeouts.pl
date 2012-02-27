@@ -124,15 +124,27 @@ sub handle_rule_creation {
   my ($rule) = @_;
   my $node = new Vyatta::Conntrack::RuleCT;
   my ($rule_string, $timeout_policy);
+  do_protocol_check($rule);
   $node->setup("system conntrack timeout custom rule $rule");
   $rule_string = $node->rule();
   $timeout_policy = $node->get_policy_command(); #nfct-timeout command string
   apply_timeout_policy($rule_string, $timeout_policy);
 }
 
+# we mandate only one protocol configuration per rule
+sub do_protocol_check {
+  my ($rule) = @_;
+  my $config = new Vyatta::Config;
+  my $protocol_nos = $config->listNodes("system conntrack timeout custom rule $rule protocol");
+  if ($protocol_nos > 1) {
+    Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: more than one protocol in rule $rule");
+    exit 1;
+  }
+}
 
 sub handle_rule_modification {
   my ($rule) = @_;
+  do_protocol_check($rule);
   handle_rule_deletion($rule);
   handle_rule_creation($rule);
 }
