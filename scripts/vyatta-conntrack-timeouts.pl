@@ -136,8 +136,8 @@ sub do_protocol_check {
   my ($rule) = @_;
   my $config = new Vyatta::Config;
   my $protocol_nos = $config->listNodes("system conntrack timeout custom rule $rule protocol");
-  if ($protocol_nos > 1) {
-    Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: more than one protocol in rule $rule");
+  if (($protocol_nos > 1) or ($protocol_nos < 1)) {
+    Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: please configure exactly one protocol in rule $rule");
     exit 1;
   }
 }
