@@ -1,6 +1,6 @@
 type: u32
 
-help: UDP generic timeout for matching flow(s) in seconds
+help: UDP generic timeout for matching connection(s) in seconds
 
 val_help: u32:1-21474836; UDP generic timeout in seconds
 

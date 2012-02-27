@@ -1,4 +1,4 @@
-help: Define custom timeouts per flow
+help: Define custom timeouts per connection 
 end: if sudo /opt/vyatta/bin/sudo-users/vyatta-conntrack-timeouts.pl --update 'true';
      then
        if [ ${COMMIT_ACTION} = 'DELETE' ] ; 

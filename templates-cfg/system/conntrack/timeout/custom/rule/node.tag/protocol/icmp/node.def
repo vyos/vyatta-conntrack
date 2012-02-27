@@ -1,6 +1,6 @@
 type: u32
 
-help: ICMP timeout for matching flow(s) in seconds
+help: ICMP timeout for matching connection(s) in seconds
 
 val_help: u32:1-21474836; ICMP timeout in seconds
 
