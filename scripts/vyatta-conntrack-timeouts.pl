@@ -69,7 +69,7 @@ sub remove_timeout_policy {
     # First remove the iptables rules before removing policy.
     my $iptables_cmd1 = "iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]";
     my $iptables_cmd2 = "iptables -D OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
-    my $nfct_timeout_cmd = "nfct-timeout remove $timeout_policy"; 
+    my $nfct_timeout_cmd = "nfct timeout remove $timeout_policy"; 
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
       # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
@@ -92,7 +92,7 @@ sub remove_timeout_policy {
 # iptables -I PREROUTING -t raw -s 1.1.1.1 -d 2.2.2.2 -j CT --timeout policy1
 sub apply_timeout_policy {
     my ($rule_string, $timeout_policy) = @_;
-    my $nfct_timeout_cmd = "nfct-timeout create $timeout_policy"; 
+    my $nfct_timeout_cmd = "nfct timeout create $timeout_policy"; 
     my @tokens = split (' ', $timeout_policy);
     my $iptables_cmd1 = "iptables -I PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]";
     my $iptables_cmd2 = "iptables -I OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
@@ -106,14 +106,14 @@ sub apply_timeout_policy {
     if ($? >> 8) {
       #cleanup the policy before exit. 
       # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
-#      run_cmd("nfct-timeout remove $timeout_policy");   
+#      run_cmd("nfct timeout remove $timeout_policy");   
 #      print "$CTERROR failed to run $iptables_cmd1\n";    
 #      exit 1; 
     }
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
       # FIXME: as of now, dont print/handle/exit as these always fail in iptables.
-#      run_cmd("nfct-timeout remove $timeout_policy");   
+#      run_cmd("nfct timeout remove $timeout_policy");   
 #      run_cmd("iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]");   
 #      print "$CTERROR failed to run $iptables_cmd2\n";    
 #      exit 1;
