@@ -1,3 +1,9 @@
+vyatta-conntrack (0.28+oxnard2) unstable; urgency=low
+
+  * fixing 7866
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Fri, 16 Mar 2012 15:42:47 -0700
+
 vyatta-conntrack (0.28+oxnard1) unstable; urgency=low
 
   * new branch
