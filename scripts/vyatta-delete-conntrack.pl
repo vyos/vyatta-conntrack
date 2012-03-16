@@ -99,10 +99,20 @@ sub print_data_from_xml {
             $timeout, $state_connection);
         $proto    = $proto{original};
         $protonum = $protonum{original};
-        $in_src   = "$src{original}";
-        $in_src  .= ":$sport{original}" if defined $sport{original};
-        $in_dst   = "$dst{original}";
-        $in_dst  .= ":$dport{original}" if defined $dport{original};
+        if (( $family eq 'ipv6') and (defined $sport{original})) {
+          $in_src   = "\[$src{original}]:$sport{original}";
+        } else {
+          $in_src   = "$src{original}";
+          $in_src  .= ":$sport{original}" if defined $sport{original};
+        }
+       
+        if (( $family eq 'ipv6') and (defined $dport{original})) {
+          $in_dst   = "\[$dst{original}]:$dport{original}";
+        } else {
+          $in_dst   = "$dst{original}";
+          $in_dst  .= ":$dport{original}" if defined $dport{original};
+        }
+
         $connection_id = "$connection_id_ref";
         $timeout = "$timeout_ref";
 
