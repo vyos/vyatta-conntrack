@@ -69,7 +69,7 @@ sub remove_timeout_policy {
     # First remove the iptables rules before removing policy.
     my $iptables_cmd1 = "iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]";
     my $iptables_cmd2 = "iptables -D OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
-    my $nfct_timeout_cmd = "$nfct timeout remove $timeout_policy"; 
+    my $nfct_timeout_cmd = "$nfct timeout delete $timeout_policy"; 
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
       # FIXME: as of now, dont print/handle/exit as these always fail in iptables.

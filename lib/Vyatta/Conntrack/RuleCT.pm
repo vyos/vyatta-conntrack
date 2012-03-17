@@ -74,10 +74,14 @@ sub rule {
         Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: $err_str");
         exit 1;
   }
-  if ($self->{_protocol} = "tcp") {
+  if ($self->{_protocol} eq "tcp") {
     $rule .= " -p tcp";
-  } elsif ($self->{_protocol} = "udp") {
+  } elsif ($self->{_protocol} eq "udp") {
     $rule .= " -p udp";
+  } elsif ($self->{_protocol} eq "icmp") {
+    $rule .= " -p icmp";
+  } elsif ($self->{_protocol} eq "other") {
+    $rule .= " -p 255";
   }
   $rule .= " $srcrule $dstrule ";
   return $rule;
@@ -135,8 +139,6 @@ sub setup_base {
     $self->{_other} = $config->$val_func("protocol other");
   }
 
-  #FIXME: AddressFilter.pm needs a change to accomodate other and
-  # icmp protocols as it does port checks unconditionally. 
   $src->$addr_setup("$level source");
   $src->{_protocol} = $self->{_protocol};#needed to use address filter
   if ( (($src->{_protocol} eq 'icmp') or ($src->{_protocol} eq 'other')) and (defined($src->{_port})) ) { 
@@ -216,15 +218,15 @@ sub get_policy_command {
   } elsif ($self->{_protocol} eq 'udp') {
       $command .= " udp";
       if ($self->{_udp}->{_other}) {
-        $command .= " other $self->{_udp}->{_other}";
+        $command .= " unreplied $self->{_udp}->{_other}";
       }
       if ($self->{_udp}->{_stream}) {
-        $command .= " stream $self->{_udp}->{_stream}";
+        $command .= " replied $self->{_udp}->{_stream}";
       }
   } elsif ($self->{_protocol} eq 'icmp') {
       $command .= " icmp $self->{_icmp}";
   } elsif ($self->{_protocol} eq 'other') {  
-      $command .= " other $self->{_other}";
+      $command .= " generic timeout $self->{_other}";
     }
   return $command;
 }
