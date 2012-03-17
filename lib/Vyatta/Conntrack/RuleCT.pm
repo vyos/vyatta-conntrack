@@ -74,6 +74,11 @@ sub rule {
         Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: $err_str");
         exit 1;
   }
+  if ($self->{_protocol} = "tcp") {
+    $rule .= " -p tcp";
+  } elsif ($self->{_protocol} = "udp") {
+    $rule .= " -p udp";
+  }
   $rule .= " $srcrule $dstrule ";
   return $rule;
 }
@@ -181,7 +186,7 @@ sub get_policy_command {
   my ($self ) = @_;
   my $command;
   my @level_nodes = split (' ', $self->{_comment});
-  $command .= "policy_$level_nodes[2]_$level_nodes[5]";
+  $command .= "policy_$level_nodes[2]_$level_nodes[5] inet";
   if ($self->{_protocol} eq 'tcp') {
     $command .= " tcp";
     if ($self->{_tcp}->{_close}) {
