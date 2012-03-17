@@ -127,7 +127,7 @@ sub handle_rule_creation {
   do_protocol_check($rule);
   $node->setup("system conntrack timeout custom rule $rule");
   $rule_string = $node->rule();
-  $timeout_policy = $node->get_policy_command(); #nfct-timeout command string
+  $timeout_policy = $node->get_policy_command("add"); #nfct-timeout command string
   apply_timeout_policy($rule_string, $timeout_policy);
 }
 
@@ -155,7 +155,7 @@ sub handle_rule_deletion {
   my ($rule_string, $timeout_policy);
   $node->setupOrig("system conntrack timeout custom rule $rule");
   $rule_string = $node->rule();
-  $timeout_policy = $node->get_policy_command(); #nfct-timeout command string
+  $timeout_policy = $node->get_policy_command("delete"); #nfct-timeout command string
   remove_timeout_policy($rule_string, $timeout_policy);
 }
 

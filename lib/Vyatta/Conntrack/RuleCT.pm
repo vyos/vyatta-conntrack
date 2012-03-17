@@ -185,10 +185,14 @@ sub print {
 # return a string that has the nfct-timeout command to create
 # a timeout policy.  
 sub get_policy_command {
-  my ($self ) = @_;
+  my ($self, $is_delete) = @_;
   my $command;
   my @level_nodes = split (' ', $self->{_comment});
-  $command .= "policy_$level_nodes[2]_$level_nodes[5] inet";
+  $command .= "policy_$level_nodes[2]_$level_nodes[5] ";
+  if ($is_delete eq "delete") {
+    return $command;
+  } 
+  $command .= " inet";
   if ($self->{_protocol} eq 'tcp') {
     $command .= " tcp";
     if ($self->{_tcp}->{_close}) {
