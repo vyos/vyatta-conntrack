@@ -1,3 +1,50 @@
+vyatta-conntrack (0.31) unstable; urgency=low
+
+  [ Gaurav Sinha ]
+  * Initial commit for per-flow timeout CLI
+  * Removed unwanted address-group/network group etc. from CLI
+  * adding an initial version of conntrack-timeouts script
+  * timeouts script, and new nodes
+
+  [ Gaurav ]
+  * timeout script, similar to firewall one, with a few differences.
+  * Adding rule and address setup/parsing libraries
+  * Removing newly added file AddressFilterCT.pm.
+  * removing AddressFilterCT.pm
+  * modified to use AddressFilter from IpTables
+  * adding various timers in custom rule template
+  * changing structure of hashes kept for timeouts
+  * Add function to create nfct-timeout policy
+  * Fixing templates to avoid defaults since these rules override the
+    global defaults
+  * Fixing nfct-command string:only modified timer is included in the
+    command
+  * Removed default timeouts for override udp/icmp/other, fixed minor
+    bugs
+  * Error checks for ports with other/icmp, as not allowed
+  * Adding deletion, error handling etc.
+  * adding apply/remove policy function, still dummy
+  * add run_cmd function with error checking
+  * re-factored
+  * handle modification, disabled error handling for now as iptables
+    does not support timeout target yet
+  * do_protocol_check function, mandates one protocol subtree per rule
+    max
+  * Updated help strings to avoid confusion with global timeouts
+  * check presence of protocol config subtree
+  * Using connection instead of flow to refer to 5 tuple in help strings
+  * changing nfct-timeout to nfct timeout
+  * use right path of the nfct executable
+
+  [ Gaurav Sinha ]
+  * use add instead of create, use inet, pre-pend protocol to iptables
+    rule
+  * fixed generic timeout, udp stream->replied and other->unreplied,
+    fixed bug with protocol string comparision
+  * delete nfct fixed, use only policy name, modified deletion function
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Sat, 17 Mar 2012 13:08:57 -0700
+
 vyatta-conntrack (0.30) unstable; urgency=low
 
   * fixing 7866
