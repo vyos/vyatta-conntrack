@@ -1,3 +1,12 @@
+vyatta-conntrack (0.32) unstable; urgency=low
+
+  [ Gaurav Sinha ]
+  * 0.31
+
+  [ Gaurav ]
+
+ -- Gaurav <gaurav.sinha@vyatta.com>  Tue, 20 Mar 2012 20:41:08 -0700
+
 vyatta-conntrack (0.31) unstable; urgency=low
 
   [ Gaurav Sinha ]
