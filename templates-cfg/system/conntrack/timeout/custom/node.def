@@ -1,13 +1,3 @@
 help: Define custom timeouts per connection 
-end: if sudo /opt/vyatta/bin/sudo-users/vyatta-conntrack-timeouts.pl --update 'true';
-     then
-       if [ ${COMMIT_ACTION} = 'DELETE' ] ; 
-       then
-          sudo /opt/vyatta/bin/sudo-users/vyatta-conntrack-timeouts.pl --delete 'true'; 
-       fi
-     else
-       exit 1;
-     fi
-
-create: sudo /opt/vyatta/bin/sudo-users/vyatta-conntrack-timeouts.pl --create 'true'
+end:expression: "sudo /opt/vyatta/bin/sudo-users/vyatta-conntrack-timeouts.pl"
 

@@ -49,13 +49,13 @@ vyatta-conntrack (0.30) unstable; urgency=low
 
   * fixing 7866
 
- -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Fri, 16 Mar 2012 15:49:43 -0700
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Fri, 16 Mar 2012 15:42:47 -0700
 
-vyatta-conntrack (0.29) unstable; urgency=low
+vyatta-conntrack (0.28+oxnard1) unstable; urgency=low
 
   * new branch
 
- -- Deepti Kulkarni <deepti@vyatta.com>  Sat, 03 Mar 2012 02:25:49 -0800
+ -- Deepti Kulkarni <deepti@vyatta.com>  Sat, 03 Mar 2012 02:23:06 -0800
 
 vyatta-conntrack (0.28) unstable; urgency=low
 

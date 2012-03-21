@@ -81,7 +81,7 @@ sub rule {
   } elsif ($self->{_protocol} eq "icmp") {
     $rule .= " -p icmp";
   } elsif ($self->{_protocol} eq "other") {
-    $rule .= " -p 255";
+    $rule .= " -p all";
   }
   $rule .= " $srcrule $dstrule ";
   return $rule;
@@ -199,22 +199,22 @@ sub get_policy_command {
       $command .= " close $self->{_tcp}->{_close}"; 
     }
     if ($self->{_tcp}->{_close_wait}) {
-      $command .= " close-wait $self->{_tcp}->{_close_wait}";
+      $command .= " close_wait $self->{_tcp}->{_close_wait}";
     }
     if ($self->{_tcp}->{_time_wait}) {
-      $command .= " time-wait $self->{_tcp}->{_time_wait}"; 
+      $command .= " time_wait $self->{_tcp}->{_time_wait}"; 
     }
     if ($self->{_tcp}->{_syn_recv}) {
-      $command .= " syn-recv $self->{_tcp}->{_syn_recv}"; 
+      $command .= " syn_recv $self->{_tcp}->{_syn_recv}"; 
     }
     if ($self->{_tcp}->{_syn_sent}) {
-      $command .= " syn-sent $self->{_tcp}->{_syn_sent}"; 
+      $command .= " syn_sent $self->{_tcp}->{_syn_sent}"; 
     }
     if ($self->{_tcp}->{_last_ack}) {
-      $command .= " last-ack $self->{_tcp}->{_last_ack}"; 
+      $command .= " last_ack $self->{_tcp}->{_last_ack}"; 
     }
     if ($self->{_tcp}->{_fin_wait}) {
-      $command .= " fin-wait $self->{_tcp}->{_fin_wait}"; 
+      $command .= " fin_wait $self->{_tcp}->{_fin_wait}"; 
     }
     if ($self->{_tcp}->{_established}) {
       $command .= " established $self->{_tcp}->{_established}"; 
@@ -228,7 +228,7 @@ sub get_policy_command {
         $command .= " replied $self->{_udp}->{_stream}";
       }
   } elsif ($self->{_protocol} eq 'icmp') {
-      $command .= " icmp $self->{_icmp}";
+      $command .= " icmp timeout $self->{_icmp}";
   } elsif ($self->{_protocol} eq 'other') {  
       $command .= " generic timeout $self->{_other}";
     }
