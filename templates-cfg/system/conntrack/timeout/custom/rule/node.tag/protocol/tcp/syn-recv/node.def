@@ -1,0 +1,8 @@
+type: u32
+
+help: TCP SYN-RECEIVED timeout for matching connection(s) in seconds
+
+val_help: u32:1-21474836; TCP SYN-RECEIVED timeout in seconds
+
+syntax:expression: ($VAR(@) >= 1 && $VAR(@) <= 21474836) ; "Value must be between 1 and 21474836"
+
