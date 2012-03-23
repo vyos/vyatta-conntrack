@@ -121,7 +121,7 @@ sub setup_base {
     $self->{_protocol} = "tcp";
     $self->{_tcp}->{_close} = $config->$val_func("protocol tcp close"); 
     $self->{_tcp}->{_close_wait} = $config->$val_func("protocol tcp close-wait"); 
-    $self->{_tcp}->{_time_wait} = $config->$val_func("protocol tcp time_wait"); 
+    $self->{_tcp}->{_time_wait} = $config->$val_func("protocol tcp time-wait"); 
     $self->{_tcp}->{_syn_recv} = $config->$val_func("protocol tcp syn-recv"); 
     $self->{_tcp}->{_syn_sent} = $config->$val_func("protocol tcp syn-sent"); 
     $self->{_tcp}->{_last_ack} = $config->$val_func("protocol tcp last-ack"); 

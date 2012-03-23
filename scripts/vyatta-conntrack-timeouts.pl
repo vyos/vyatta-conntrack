@@ -67,8 +67,8 @@ sub remove_timeout_policy {
     my ($rule_string, $timeout_policy) = @_;
     my @tokens = split (' ', $timeout_policy);
     # First remove the iptables rules before removing policy.
-    my $iptables_cmd1 = "iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]";
-    my $iptables_cmd2 = "iptables -D OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd1 = "iptables -D CT_TIMEOUT -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd2 = "iptables -D CT_TIMEOUT -t raw $rule_string -j RETURN";
     my $nfct_timeout_cmd = "$nfct timeout delete $timeout_policy"; 
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
@@ -87,12 +87,19 @@ sub remove_timeout_policy {
 
 # nfct-timeout create policy1 tcp established 1200 close-wait 100 fin-wait 10
 # iptables -I PREROUTING -t raw -s 1.1.1.1 -d 2.2.2.2 -j CT --timeout policy1
+# 
+# we have a chain setup, i.e. CT_TIMEOUT chain. Insert rule with timeout policy
+# in the chain followed by another rule with matching 5 tuple to allow return
+# from the point CT target matched. CT is non terminating and we want to keep 
+# behavior consistent with firewall, NAT etc.  
 sub apply_timeout_policy {
-    my ($rule_string, $timeout_policy, $rule) = @_;
+    my ($rule_string, $timeout_policy, $rule, $num_rules) = @_;
     my $nfct_timeout_cmd = "$nfct timeout add $timeout_policy"; 
     my @tokens = split (' ', $timeout_policy);
-    my $iptables_cmd1 = "iptables -I PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]";
-    my $iptables_cmd2 = "iptables -I OUTPUT -t raw $rule_string -j CT --timeout $tokens[0]";
+    # insert at num_rules + 1 as there are so many rules already. 
+    my $iptables_cmd1 = "iptables -I CT_TIMEOUT $num_rules -t raw $rule_string -j CT --timeout $tokens[0]";
+    $num_rules +=1;
+    my $iptables_cmd2 = "iptables -I CT_TIMEOUT $num_rules -t raw $rule_string -j RETURN";
     run_cmd($nfct_timeout_cmd);
     if ($? >> 8) {
       print "$CTERROR failed to run $nfct_timeout_cmd\n";    
@@ -115,14 +122,14 @@ sub apply_timeout_policy {
 }
 
 sub handle_rule_creation {
-  my ($rule) = @_;
+  my ($rule, $num_rules) = @_;
   my $node = new Vyatta::Conntrack::RuleCT;
   my ($rule_string, $timeout_policy);
   do_protocol_check($rule);
   $node->setup("system conntrack timeout custom rule $rule");
   $rule_string = $node->rule();
   $timeout_policy = $node->get_policy_command("add"); #nfct-timeout command string
-  apply_timeout_policy($rule_string, $timeout_policy, $rule);
+  apply_timeout_policy($rule_string, $timeout_policy, $rule, $num_rules);
 }
 
 # we mandate only one protocol configuration per rule
@@ -137,10 +144,10 @@ sub do_protocol_check {
 }
 
 sub handle_rule_modification {
-  my ($rule) = @_;
+  my ($rule, $num_rules) = @_;
   do_protocol_check($rule);
   handle_rule_deletion($rule);
-  handle_rule_creation($rule);
+  handle_rule_creation($rule, $num_rules);
 }
 
 sub handle_rule_deletion {
@@ -153,6 +160,8 @@ sub handle_rule_deletion {
   remove_timeout_policy($rule_string, $timeout_policy);
 }
 
+sub numerically { $a <=> $b; }
+
 sub update_config {
   my $config = new Vyatta::Config;
   my %rules = (); #hash of timeout config rules  
@@ -160,12 +169,17 @@ sub update_config {
 
   $config->setLevel("system conntrack timeout custom rule");
   %rules = $config->listNodeStatus();
-  foreach my $rule (sort keys %rules) { 
+
+  my $iptablesrule = 1;
+  foreach my $rule (sort numerically keys %rules) { 
     if ("$rules{$rule}" eq 'static') {
+      $iptablesrule+=2;
     } elsif ("$rules{$rule}" eq 'added') {      
-        handle_rule_creation($rule);
+        handle_rule_creation($rule, $iptablesrule);
+        $iptablesrule+=2;
     } elsif ("$rules{$rule}" eq 'changed') {
-        handle_rule_modification($rule);
+        handle_rule_modification($rule, $iptablesrule);
+        $iptablesrule+=2;
     } elsif ("$rules{$rule}" eq 'deleted') {
         handle_rule_deletion($rule);
     }  
