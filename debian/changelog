@@ -1,3 +1,9 @@
+vyatta-conntrack (0.28+oxnard4) unstable; urgency=low
+
+  * introducing CT_TIMEOUT chain with related fixes.
+
+ -- Gaurav <gaurav.sinha@vyatta.com>  Fri, 23 Mar 2012 17:55:11 -0700
+
 vyatta-conntrack (0.28+oxnard3) unstable; urgency=low
 
   [ Deepti Kulkarni ]
