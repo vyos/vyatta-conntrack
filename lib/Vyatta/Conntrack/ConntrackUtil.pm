@@ -25,7 +25,23 @@
 
 package Vyatta::Conntrack::ConntrackUtil;
 use base qw(Exporter);
-our @EXPORT = qw(check_for_conntrack_hooks);
+our @EXPORT = qw(check_for_conntrack_hooks, 
+                 process_protocols);
+
+sub process_protocols {
+  my $proto = undef;
+  my %proto_hash = ();
+  my $PROTO_FILE  = '/etc/protocols';
+  # do nothing if can't open
+  return if (!open($proto, $PROTO_FILE));
+  while (<$proto>) {
+    next if (/^\s*#/);
+    next if (!/^\S+\s+(\d+)\s+(\S+)\s/);
+    $proto_hash{$1} = $2;
+  }
+  close $proto;
+  return \%proto_hash;
+}
 
 #function to find if connection tracking is enabled. 
 #looks in the iptables to see if any of the features introduced

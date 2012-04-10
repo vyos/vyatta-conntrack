@@ -36,8 +36,9 @@ use strict;
 use Switch;
 use Vyatta::TypeChecker;
 
-my $format = "%-10s %-22s %-22s %-12s %-20s\n";
-my $format_IPv6 = "%-10s %-40s %-40s %-12s %-20s\n";
+my $format = "%-10s %-22s %-22s %-16s %-20s\n";
+my $format_IPv6 = "%-10s %-40s %-40s %-16s %-20s\n";
+my $href; #reference to hash containing protocol-num to name key-value pairs
 
 sub print_xml {
     my ($data, $cache, $family) = @_;
@@ -45,6 +46,7 @@ sub print_xml {
 
     my %flowh;
     my $tcount = 0;
+    $href = process_protocols();
     while (1) {
         my $meta = 0;
         last if ! defined $data->{flow}[$flow];
@@ -67,6 +69,9 @@ sub print_xml {
                         $dport{$dir} = $l4_ref->{dport}[0];
                         $proto{$dir} = $l4_ref->{protoname};
                         $protonum{$dir} = $l4_ref->{protonum};
+                        if (($proto{$dir} eq 'unknown') and (defined($protonum{$dir}))) {
+                          $proto{$dir} = lc(${$href}{$protonum{$dir}});  
+                        }
                     }
                 }
             } elsif ($dir eq 'independent') {
