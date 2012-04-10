@@ -1,3 +1,9 @@
+vyatta-conntrack (0.34) unstable; urgency=low
+
+  * fixing bug 7861, resolve protocol name from /etc/protocols.
+
+ -- Gaurav <gaurav.sinha@vyatta.com>  Mon, 09 Apr 2012 18:07:47 -0700
+
 vyatta-conntrack (0.33) unstable; urgency=low
 
   * introducing CT_TIMEOUT chain with related fixes.
