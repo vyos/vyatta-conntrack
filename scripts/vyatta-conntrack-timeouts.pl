@@ -67,8 +67,8 @@ sub remove_timeout_policy {
     my ($rule_string, $timeout_policy) = @_;
     my @tokens = split (' ', $timeout_policy);
     # First remove the iptables rules before removing policy.
-    my $iptables_cmd1 = "iptables -D CT_TIMEOUT -t raw $rule_string -j CT --timeout $tokens[0]";
-    my $iptables_cmd2 = "iptables -D CT_TIMEOUT -t raw $rule_string -j RETURN";
+    my $iptables_cmd1 = "iptables -D VYATTA_CT_TIMEOUT -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd2 = "iptables -D VYATTA_CT_TIMEOUT -t raw $rule_string -j RETURN";
     my $nfct_timeout_cmd = "$nfct timeout delete $timeout_policy"; 
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
@@ -88,7 +88,7 @@ sub remove_timeout_policy {
 # nfct-timeout create policy1 tcp established 1200 close-wait 100 fin-wait 10
 # iptables -I PREROUTING -t raw -s 1.1.1.1 -d 2.2.2.2 -j CT --timeout policy1
 # 
-# we have a chain setup, i.e. CT_TIMEOUT chain. Insert rule with timeout policy
+# we have a chain setup, i.e. VYATTA_CT_TIMEOUT chain. Insert rule with timeout policy
 # in the chain followed by another rule with matching 5 tuple to allow return
 # from the point CT target matched. CT is non terminating and we want to keep 
 # behavior consistent with firewall, NAT etc.  
@@ -97,9 +97,9 @@ sub apply_timeout_policy {
     my $nfct_timeout_cmd = "$nfct timeout add $timeout_policy"; 
     my @tokens = split (' ', $timeout_policy);
     # insert at num_rules + 1 as there are so many rules already. 
-    my $iptables_cmd1 = "iptables -I CT_TIMEOUT $num_rules -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd1 = "iptables -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j CT --timeout $tokens[0]";
     $num_rules +=1;
-    my $iptables_cmd2 = "iptables -I CT_TIMEOUT $num_rules -t raw $rule_string -j RETURN";
+    my $iptables_cmd2 = "iptables -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j RETURN";
     run_cmd($nfct_timeout_cmd);
     if ($? >> 8) {
       print "$CTERROR failed to run $nfct_timeout_cmd\n";    
