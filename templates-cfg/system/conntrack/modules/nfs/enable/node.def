@@ -1,4 +1,4 @@
-help: enable nfs
+help: enable NFS protocol connection tracking helper 
 
 create:expression: "touch /tmp/vyatta-conntrack-sync"
 
