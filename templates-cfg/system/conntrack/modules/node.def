@@ -1,7 +1,1 @@
 help: Connection tracking modules settings
- 
-end:expression: "if [ -f \"/tmp/vyatta-conntrack-sync\" ]; then \
-                  sudo /opt/vyatta/sbin/vyatta-conntrack-sync.pl --action=enable; \
-                  sudo rm \"/tmp/vyatta-conntrack-sync\"; \
-                fi"
-

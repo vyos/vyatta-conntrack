@@ -1,3 +1,11 @@
 help: enable SQLnet protocol helper 
 
 create:expression: "touch /tmp/vyatta-conntrack-sync"
+
+end: if [ ${COMMIT_ACTION} = 'DELETE' ]; then
+       echo "sudo iptables -D VYATTA_CT_HELPER -t raw -p tcp --dport 1521 -j CT --helper sqlnet" 
+       echo "sudo iptables -D VYATTA_CT_HELPER -t raw -p tcp --dport 1525 -j CT --helper sqlnet" 
+     else
+       echo "sudo iptables -I VYATTA_CT_HELPER -t raw -p tcp --dport 1521 -j CT --helper sqlnet" 
+       echo "sudo iptables -I VYATTA_CT_HELPER -t raw -p tcp --dport 1525 -j CT --helper sqlnet" 
+     fi;
