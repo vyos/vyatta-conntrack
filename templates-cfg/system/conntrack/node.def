@@ -2,11 +2,6 @@ help: Connection tracking engine options
 
 priority: 218 # before NAT and conntrack-sync are configured
 
-end:expression: "if [ -f \"/tmp/vyatta-conntrack-sync\" ]; then \
-                  sudo /opt/vyatta/sbin/vyatta-conntrack-sync.pl --action=enable; \
-                  sudo rm \"/tmp/vyatta-conntrack-sync\"; \
-                fi"
-
 delete: # set conntrack table size to standard 16384 entries if conntrack settings are removed
         sudo sysctl -q -w net/nf_conntrack_max=16384
 
@@ -25,5 +20,5 @@ delete: # set conntrack table size to standard 16384 entries if conntrack settin
 
         # need to restart conntrackd with updated conntrack table size
         if cli-shell-api existsActive service conntrack-sync; then
-          touch /tmp/vyatta-conntrack-sync
+          sudo /opt/vyatta/sbin/vyatta-conntrack-sync.pl --action=enable 
         fi
