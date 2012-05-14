@@ -1,0 +1,7 @@
+help: disable SQLnet protocol connection tracking helper 
+
+end: if [ ${COMMIT_ACTION} = 'DELETE' ]; then
+       sudo /opt/vyatta/bin/sudo-users/vyatta-cthelper.pl --enable_sqlnet=sqlnet
+     else  
+       sudo /opt/vyatta/bin/sudo-users/vyatta-cthelper.pl --disable_sqlnet=sqlnet
+     fi;
