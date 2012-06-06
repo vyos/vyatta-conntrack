@@ -19,7 +19,7 @@ my $debug_flag = 0;
 
 # Enable sending debug output to syslog.
 my $syslog_flag = 0;
-my $nfct = "sudo /opt/vyatta/sbin/nfct";
+my $nfct = "sudo /usr/sbin/nfct";
 my ($create, $delete, $update);
 my $CTERROR = "Conntrack timeout error:";
 GetOptions("create=s"        => \$create,
