@@ -1,3 +1,20 @@
+vyatta-conntrack (0.37) unstable; urgency=low
+
+  [ Gaurav ]
+  * initial CLI for NFS and SQLnet modules
+
+  [ Gaurav Sinha ]
+  * CLI to add nfs/SQLnet module helpers
+  * ensure single reload of conntrackd daemon
+  * fix help strings
+  * remove SQLnet
+  * change default behavior, added vyatta-cthelper.pl
+  * add vyatta-cthelper.pl, disable nodes, add/remove functions for
+    chain
+  * delete enable config node
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 06 Jun 2012 21:03:37 -0700
+
 vyatta-conntrack (0.36) unstable; urgency=low
 
   * Fix nfct path as per new packaging due to cthelper
