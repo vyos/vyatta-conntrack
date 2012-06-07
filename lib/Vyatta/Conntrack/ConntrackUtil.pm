@@ -24,9 +24,8 @@
 #
 
 package Vyatta::Conntrack::ConntrackUtil;
+use Vyatta::IpTables::Mgr;
 use base qw(Exporter);
-our @EXPORT = qw(check_for_conntrack_hooks, 
-                 process_protocols);
 
 sub process_protocols {
   my $proto = undef;
@@ -42,6 +41,7 @@ sub process_protocols {
   close $proto;
   return \%proto_hash;
 }
+our @EXPORT = qw(check_for_conntrack_hooks, process_protocols, check_and_add_helpers);
 
 #function to find if connection tracking is enabled. 
 #looks in the iptables to see if any of the features introduced
@@ -64,4 +64,23 @@ sub check_for_conntrack_hooks {
     }
 }
 1;
+
+sub
+check_ct_helper_rules {
+  my $index;
+  my $cthelper_chain = "VYATTA_CT_HELPER";
+    foreach my $label ('PREROUTING', 'OUTPUT') {
+      $index = ipt_find_chain_rule($iptables_cmd, 'raw', $label, $cthelper_chain);
+      if (!defined($index)) {
+        # add VYATTA_CT_HELPER to PREROUTING / OUTPUT
+        print "hook not present\n";        
+      }
+    }
+}
+
+sub check_and_add_helpers {
+  if (check_for_conntrack_hooks()) {
+    check_ct_helper_rules();
+  }
+}
 # end of file

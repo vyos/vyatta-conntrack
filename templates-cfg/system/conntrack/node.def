@@ -20,5 +20,5 @@ delete: # set conntrack table size to standard 16384 entries if conntrack settin
 
         # need to restart conntrackd with updated conntrack table size
         if cli-shell-api existsActive service conntrack-sync; then
-          sudo /opt/vyatta/sbin/vyatta-conntrack-sync.pl --action=enable
+          sudo /opt/vyatta/sbin/vyatta-conntrack-sync.pl --action=enable 
         fi

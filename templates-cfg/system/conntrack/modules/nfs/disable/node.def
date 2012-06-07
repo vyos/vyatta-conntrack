@@ -1,0 +1,7 @@
+help: disable NFS protocol connection tracking helper 
+
+end: if [ ${COMMIT_ACTION} = 'DELETE' ]; then
+       sudo /opt/vyatta/bin/sudo-users/vyatta-cthelper.pl --enable_nfs=nfs
+     else  
+       sudo /opt/vyatta/bin/sudo-users/vyatta-cthelper.pl --disable_nfs=nfs
+     fi;
