@@ -7,6 +7,7 @@ use strict;
 use Vyatta::Config;
 use Vyatta::Conntrack::RuleCT;
 use Vyatta::IpTables::AddressFilter;
+use Vyatta::Conntrack::ConntrackUtil;
 use Getopt::Long;
 use Vyatta::Zone;
 use Sys::Syslog qw(:standard :macros);
@@ -30,38 +31,6 @@ GetOptions("create=s"        => \$create,
 update_config();
 
 openlog("vyatta-conntrack", "pid", "local0");
-
-sub log_msg {
-  my $message = shift;
-
-  print "DEBUG: $message\n" if $debug_flag;
-  syslog(LOG_DEBUG, "%s", $message) if $syslog_flag;
-}
-# Run command and capture output
-# run_cmd("$iptables_cmd -t $table -F $name", 1);
-# if command fails, then send output to syslog
-sub run_cmd {
-  my ($cmd_to_run, $redirect) = @_;
-
-  log_msg("Running: $cmd_to_run");
-#  print "$cmd_to_run\n";
-
-  if ($redirect) {
-    open (my $out, '-|',  $cmd_to_run . ' 2>&1')
-        or die "Can't run command \"$cmd_to_run\": $!";
-    my @cmd_out = <$out>;
-  
-    # if command suceeds to do nothing.
-    return if (close ($out));
-  
-    foreach my $line (@cmd_out) {
-      chomp $line;
-      syslog(LOG_INFO, "%s", $line);
-    }
-  } else {
-    system($cmd_to_run);
-  }
-}
 
 sub remove_timeout_policy {
     my ($rule_string, $timeout_policy) = @_;
