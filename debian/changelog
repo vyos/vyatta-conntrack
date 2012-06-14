@@ -1,3 +1,9 @@
+vyatta-conntrack (0.39) unstable; urgency=low
+
+  * remove unwanted functions
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Thu, 14 Jun 2012 11:19:41 -0700
+
 vyatta-conntrack (0.38) unstable; urgency=low
 
   * re-factored deletion code, disabling module scripts fixed
