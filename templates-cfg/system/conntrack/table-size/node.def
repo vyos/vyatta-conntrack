@@ -18,7 +18,7 @@ type: u32
 
 help: Size of connection tracking table
 
-default: 16384
+default: 262144 
 
 val_help: u32:1-50000000; Number of entries allowed in connection tracking table
 
