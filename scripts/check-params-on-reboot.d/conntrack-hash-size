@@ -22,7 +22,7 @@ else
 fi
 
 if [ -z "$cthash_cfg" ]; then
-        cthash_cfg=4096 # default hashsize value that Vyatta ships
+        cthash_cfg=32768 # default hashsize value that Vyatta ships
 fi
 
 if ! grep -q "nf_conntrack hashsize=$cthash_cfg$" \
