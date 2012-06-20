@@ -1,3 +1,10 @@
+vyatta-conntrack (0.43) unstable; urgency=low
+
+  * fix bug 8165
+  * 0.42
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 20 Jun 2012 16:18:58 -0700
+
 vyatta-conntrack (0.42) unstable; urgency=low
 
   * fix bug 8165
