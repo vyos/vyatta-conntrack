@@ -46,7 +46,7 @@ sub print_xml {
 
     my %flowh;
     my $tcount = 0;
-    $href = process_protocols();
+    $href = Vyatta::Conntrack::ConntrackUtil::process_protocols();
     while (1) {
         my $meta = 0;
         last if ! defined $data->{flow}[$flow];
