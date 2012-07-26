@@ -1,1 +1,8 @@
 help: TCP per connection timeout options
+commit:expression: exec " TCP=( $(cli-shell-api listNodes system conntrack timeout custom rule $VAR(../../@) protocol tcp )); \
+  if [[ ${TCP[@]} == '' ]]; then \
+    echo 'please configure a TCP timer for rule $VAR(../../@)'
+    exit 1; \
+  else \
+    exit 0; \
+  fi "
