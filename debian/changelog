@@ -1,3 +1,9 @@
+vyatta-conntrack (0.44) unstable; urgency=low
+
+  * check protocol timers are configured on commit: bug 8216
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 25 Jul 2012 17:33:24 -0700
+
 vyatta-conntrack (0.43) unstable; urgency=low
 
   * fix bug 8165
