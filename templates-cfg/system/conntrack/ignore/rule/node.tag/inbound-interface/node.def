@@ -1,0 +1,5 @@
+type: txt
+help: interface to ignore connections tracking on
+
+allowed: ${vyatta_sbindir}/vyatta-interfaces.pl --show all
+
