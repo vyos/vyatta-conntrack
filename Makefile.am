@@ -17,6 +17,7 @@ checkparamsonreboot_SCRIPTS += scripts/check-params-on-reboot.d/conntrack-hash-s
 share_perl5_DATA = lib/Vyatta/Conntrack/Config.pm
 share_perl5_DATA  += lib/Vyatta/Conntrack/ConntrackUtil.pm
 share_perl5_DATA  += lib/Vyatta/Conntrack/RuleCT.pm
+share_perl5_DATA  += lib/Vyatta/Conntrack/RuleIgnore.pm
 
 sbin_SCRIPTS = scripts/vyatta-update-conntrack-log.pl
 bin_sudo_usersdir = $(bindir)/sudo-users
@@ -24,6 +25,7 @@ bin_sudo_users_SCRIPTS = scripts/vyatta-show-conntrack.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-delete-conntrack.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-timeouts.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-cthelper.pl
+bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-ignore.pl
 
 curver_DATA = cfg-version/conntrack@1
 
