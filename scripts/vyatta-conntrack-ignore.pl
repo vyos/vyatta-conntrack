@@ -13,7 +13,7 @@ use Getopt::Long;
 use Vyatta::Zone;
 use Sys::Syslog qw(:standard :macros);
 
-#for future use when v6 timeouts need to be set
+#for future use when v6 ignore s need to be set
 my %cmd_hash = ( 'ipv4'        => 'iptables',
 		 'ipv6'   => 'ip6tables');
 # Enable printing debug output to stdout.
@@ -23,7 +23,7 @@ my $debug_flag = 0;
 my $syslog_flag = 0;
 my $nfct = "sudo /usr/sbin/nfct";
 my ($create, $delete, $update);
-my $CTERROR = "Conntrack timeout error:";
+my $CTERROR = "Conntrack ignore  error:";
 GetOptions("create=s"        => \$create,
            "delete=s"        => \$delete,
            "update=s"        => \$update,
@@ -35,48 +35,46 @@ openlog("vyatta-conntrack", "pid", "local0");
 
 sub remove_ignore_policy {
     my ($rule_string) = @_;
-#    my $iptables_cmd1 = "iptables -D VYATTA_CT_TIMEOUT -t raw $rule_string -j CT --timeout $tokens[0]";
- #   my $iptables_cmd2 = "iptables -D VYATTA_CT_TIMEOUT -t raw $rule_string -j RETURN";
- #   run_cmd($iptables_cmd2);
- #   if ($? >> 8) {
-  #    print "$CTERROR failed to run $iptables_cmd2\n";    
+    my $iptables_cmd1 = "iptables -D VYATTA_CT_IGNORE -t raw $rule_string -j NOTRACK";
+    my $iptables_cmd2 = "iptables -D VYATTA_CT_IGNORE -t raw $rule_string -j RETURN";
+    run_cmd($iptables_cmd2);
+    if ($? >> 8) {
+     print "$CTERROR failed to run $iptables_cmd2\n";    
       #dont exit, try to clean as much. 
-  #  }
-  #  run_cmd($iptables_cmd1);
-  #  if ($? >> 8) {
-  #    print "$CTERROR failed to run $iptables_cmd1\n";    
-  #  }
+    }
+    run_cmd($iptables_cmd1);
+    if ($? >> 8) {
+      print "$CTERROR failed to run $iptables_cmd1\n";    
+    }
 }
 
 sub apply_ignore_policy {
- #   my ($rule_string, $timeout_policy, $rule, $num_rules) = @_;
-    # insert at num_rules + 1 as there are so many rules already. 
- #  my $iptables_cmd1 = "iptables -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j CT --timeout $tokens[0]";
- # $num_rules +=1;
- #   my $iptables_cmd2 = "iptables -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j RETURN";
- #   run_cmd($nfct_timeout_cmd);
- #  if ($? >> 8) {
- #     print "$CTERROR failed to run $nfct_timeout_cmd\n";    
- #     exit 1; 
- #   }
- #  run_cmd($iptables_cmd1);
- #   if ($? >> 8) {
- #   #cleanup the policy before exit. 
- #    run_cmd("nfct timeout delete policy_timeout_$rule");   
- #    print "$CTERROR failed to run $iptables_cmd1\n";    
- #    exit 1; 
- #  }
+   my ($rule_string, $rule, $num_rules) = @_;
+   # insert at num_rules + 1 as there are so many rules already. 
+   my $iptables_cmd1 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string -j NOTRACK";
+   $num_rules +=1;
+   my $iptables_cmd2 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string -j RETURN";
+   run_cmd($iptables_cmd1);
+    if ($? >> 8) {
+     print "$CTERROR failed to run $iptables_cmd1\n";    
+     exit 1; 
+   }
+   run_cmd($iptables_cmd2);
+    if ($? >> 8) {
+     print "$CTERROR failed to run $iptables_cmd2\n";    
+     exit 1; 
+   }
 }
 
 sub handle_rule_creation {
   my ($rule, $num_rules) = @_;
   my $node = new Vyatta::Conntrack::RuleIgnore;
-  my ($rule_string, $timeout_policy);
+  my ($rule_string);
 
   do_interface_check($rule);
   $node->setup("system conntrack ignore rule $rule");
   $rule_string = $node->rule();
-  #apply_ignore_policy($rule_string, $rule, $num_rules);
+  apply_ignore_policy($rule_string, $rule, $num_rules);
 }
 
 # mandate only one interface configuration per rule

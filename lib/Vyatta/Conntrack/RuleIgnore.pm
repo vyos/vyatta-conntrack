@@ -1,8 +1,3 @@
-# 
-# The timeouts are implemented using nfct-timeout policies that are
-# later applied to the corresponding iptables rules. The rules and 
-# policies are distinguished based on the rule number.   
-
 package Vyatta::Conntrack::RuleIgnore;
 
 use strict;
@@ -50,7 +45,6 @@ sub rule {
     $rule .= " -p $self->{_protocol}";
   }
   $rule .= " $srcrule $dstrule ";
-  print "rule is $rule\n";
   return $rule;
 }
 
@@ -72,6 +66,7 @@ sub setup_base {
   $config->setLevel("$level");
   $self->{_comment} = $level;
   $self->{_rule_number} = $config->returnParent("..");
+  $self->{_interface} = $config->$val_func("inbound-interface");
 
   $src->$addr_setup("$level source");
   $src->{_protocol} = $self->{_protocol};#needed to use address filter
