@@ -67,6 +67,7 @@ sub setup_base {
   $self->{_comment} = $level;
   $self->{_rule_number} = $config->returnParent("..");
   $self->{_interface} = $config->$val_func("inbound-interface");
+  $self->{_protocol} = $config->$val_func("protocol");
 
   $src->$addr_setup("$level source");
   $src->{_protocol} = $self->{_protocol};#needed to use address filter
