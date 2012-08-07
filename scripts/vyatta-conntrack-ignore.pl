@@ -73,7 +73,6 @@ sub handle_rule_creation {
   my $node = new Vyatta::Conntrack::RuleIgnore;
   my ($rule_string, $timeout_policy);
 
-  print "handle_rule_creation\n";
   do_interface_check($rule);
   $node->setup("system conntrack ignore rule $rule");
   $rule_string = $node->rule();
@@ -93,7 +92,6 @@ sub do_interface_check {
 
 sub handle_rule_modification {
   my ($rule, $num_rules) = @_;
-  print "handle_rule_modification\n";
   do_interface_check($rule);
   handle_rule_deletion($rule);
   handle_rule_creation($rule, $num_rules);
@@ -103,7 +101,6 @@ sub handle_rule_deletion {
   my ($rule) = @_;
   my $node = new Vyatta::Conntrack::RuleIgnore;
   my ($rule_string);
-  print "handle_rule_deletion\n";
   $node->setupOrig("system conntrack ignore rule $rule");
   $rule_string = $node->rule();
   remove_ignore_policy($rule_string);
