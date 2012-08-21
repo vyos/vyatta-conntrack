@@ -26,6 +26,7 @@ bin_sudo_users_SCRIPTS += scripts/vyatta-delete-conntrack.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-timeouts.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-cthelper.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-ignore.pl
+bin_sudo_users_SCRIPTS += scripts/vyatta-show-ignore.pl
 
 curver_DATA = cfg-version/conntrack@1
 
