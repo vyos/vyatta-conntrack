@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# Module: vyatta-show-conntrack.pl
+# Module: vyatta-show-ignore.pl
 #
 # **** License ****
 # This program is free software; you can redistribute it and/or modify
@@ -34,10 +34,6 @@ use Vyatta::Misc;
 use warnings;
 use strict;
 
-my $format = "%-10s %-22s %-22s %-16s %-20s\n";
-my $format_IPv6 = "%-10s %-40s %-40s %-16s %-20s\n";
-my $href; #reference to hash containing protocol-num to name key-value pairs
-
 sub numerically { $a <=> $b; }
 
 sub print_ignore_rules {
@@ -51,8 +47,8 @@ sub print_ignore_rules {
   if (!(@rules_in_chain)){
     die "Error: no ignore rules configured\n";
   }
-  printf($format_ignore_rules, 'rule', 'source', 'destination', 'protocol', 'Interface [IN]', 'packets', 'bytes');
-  splice(@rules_in_chain, 0, 2); 
+  printf($format_ignore_rules, 'rule', 'source', 'destination', 'protocol', 'int', 'pkts', 'bytes');
+  splice(@rules_in_chain, 0, 2); # dont need first two lines
   my $rulecount = 0;
   foreach (@rules) {
     my $sourceAddress = "any";
@@ -72,11 +68,11 @@ sub print_ignore_rules {
     $interface = $config->returnOrigValue("inbound-interface"); 
 
     if (!defined ($sourcePort)) { $sourcePort = "any";} 
-    if (!defined ($sourceAddress)) { $sourceAddress = "any";} 
+    if (!defined ($sourceAddress)) { $sourceAddress = "0.0.0.0";} 
     if (!defined ($destPort)) { $destPort = "any";} 
-    if (!defined ($destinationAddress)) { $destinationAddress = "any";} 
-    if (!defined ($protocol)) { $protocol = "any";} 
-    if (!defined ($interface)) { $interface = "any";} 
+    if (!defined ($destinationAddress)) { $destinationAddress = "0.0.0.0";} 
+    if (!defined ($protocol)) { $protocol = "all";} 
+    if (!defined ($interface)) { $interface = "all";} 
 
     $sourceAddress .= ":$sourcePort";
     $destinationAddress .= ":$destPort";
