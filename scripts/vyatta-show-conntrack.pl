@@ -40,8 +40,6 @@ my $format = "%-10s %-22s %-22s %-16s %-20s\n";
 my $format_IPv6 = "%-10s %-40s %-40s %-16s %-20s\n";
 my $href; #reference to hash containing protocol-num to name key-value pairs
 
-sub numerically { $a <=> $b; }
-
 sub print_xml {
     my ($data, $cache, $family) = @_;
     my $flow = 0;
