@@ -81,7 +81,7 @@ sub print_ignore_rules {
     my @words = split(' ', $rule_ipt); 
 
     printf ($format_ignore_rules, $_, $sourceAddress, $destinationAddress, $protocol, $interface, $words[0], $words[1]);     
-    $rulecount++;
+    $rulecount+=2;
   }  
 }
 #
