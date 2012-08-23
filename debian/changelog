@@ -1,3 +1,21 @@
+vyatta-conntrack (0.47) unstable; urgency=low
+
+  * initial commit for 8067
+  * Initial conntrack-ignore rule handling script.
+  * fixing rule creation
+  * fix rule deletion and modification
+  * Fixed protocols allowed script, use same as NAT, fixed protocol
+    parsing
+  * Add show conntrack ignore command for showing conntrack ignore rules
+    with packet, byte statistics
+  * changed any to 0.0.0.0, all based on field, minor modifications in
+    show script
+  * remove numerically sort function, not needed anymore.
+  * Fix bug with statistics, count should double increment
+  * 0.46
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 22 Aug 2012 17:41:31 -0700
+
 vyatta-conntrack (0.46) unstable; urgency=low
 
   * initial commit for 8067
