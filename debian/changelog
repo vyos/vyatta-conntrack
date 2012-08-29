@@ -1,3 +1,10 @@
+vyatta-conntrack (0.48) unstable; urgency=low
+
+  * Fix 8308, use C version of vyatta-validate-type, also fixing
+    handling negation as per iptables in script
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Wed, 29 Aug 2012 16:32:14 -0700
+
 vyatta-conntrack (0.47) unstable; urgency=low
 
   * initial commit for 8067
