@@ -42,7 +42,12 @@ sub rule {
         exit 1;
   }
   if (defined($self->{_protocol})) {
-    $rule .= " -p $self->{_protocol}";
+    if ($self->{_protocol} =~ m/^!/) {
+      my $protocol = substr($self->{_protocol}, 1);
+      $rule .= " ! -p  $protocol";
+    } else {
+      $rule .= " -p $self->{_protocol}";
+    }
   }
   $rule .= " $srcrule $dstrule ";
   return $rule;
