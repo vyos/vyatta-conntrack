@@ -22,14 +22,13 @@ my $DEBUG = 'false';
 
 sub rule {
   my ( $self ) = @_;
-  my ($rule, $srcrule, $dstrule, $err_str);
-  my $tcp_and_udp = 0;
+  my ($rule1, $rule2, $srcrule, $dstrule, $err_str);
   # set CLI rule num as comment
   my @level_nodes = split (' ', $self->{_comment});
-  $rule .= " -m comment --comment \"$level_nodes[2]-$level_nodes[4]\" ";
+  $rule1 .= " -m comment --comment \"$level_nodes[2]-$level_nodes[4]\" ";
   
   if (defined($self->{_interface})) {
-    $rule .= " -i $self->{_interface} ";
+    $rule1 .= " -i $self->{_interface} ";
   }
   ($srcrule, $err_str) = $src->rule();
   if (defined($err_str)) {
@@ -41,17 +40,33 @@ sub rule {
         Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: $err_str");
         exit 1;
   }
+ 
   if (defined($self->{_protocol})) {
-    if ($self->{_protocol} =~ m/^!/) {
-      my $protocol = substr($self->{_protocol}, 1);
-      $rule .= " ! -p  $protocol";
+    if ($self->{_protocol} eq 'tcp_udp') {
+      $rule2 = $rule1;
+   #break protcol as tcp and udp, two rules
+      if ($self->{_protocol} =~ m/^!/) {
+        $rule1 .= " ! -p  tcp";
+        $rule2 .= " ! -p  udp";
+      } else {
+        $rule1 .= " -p tcp ";
+        $rule2 .= " -p udp ";
+      }
     } else {
-      $rule .= " -p $self->{_protocol}";
+      if ($self->{_protocol} =~ m/^!/) {
+        my $protocol = substr($self->{_protocol}, 1);
+        $rule1 .= " ! -p  $protocol";
+      } else {
+        $rule1 .= " -p $self->{_protocol}";
+       }
     }
   }
-
-  $rule .= " $srcrule $dstrule ";
-  return $rule;
+  
+  $rule1 .= " $srcrule $dstrule ";
+  if ($rule2) {
+    $rule2 .= " $srcrule $dstrule ";
+  }
+  return ($rule1, $rule2);
 }
 
 sub new {

@@ -49,11 +49,18 @@ sub remove_ignore_policy {
 }
 
 sub apply_ignore_policy {
-   my ($rule_string, $rule, $num_rules) = @_;
+   my ($rule_string1, $rule_string2, $rule, $num_rules) = @_;
    # insert at num_rules + 1 as there are so many rules already. 
    my $iptables_cmd1 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string -j NOTRACK";
    $num_rules +=1;
    my $iptables_cmd2 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string -j RETURN";
+   $num_rules +=1;
+
+   if ($rule_string2) {
+     my $iptables_cmd3 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string2 -j NOTRACK";
+     $num_rules +=1;
+     my $iptables_cmd4 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string2 -j RETURN";
+   }
    run_cmd($iptables_cmd1);
     if ($? >> 8) {
      print "$CTERROR failed to run $iptables_cmd1\n";    
@@ -64,17 +71,27 @@ sub apply_ignore_policy {
      print "$CTERROR failed to run $iptables_cmd2\n";    
      exit 1; 
    }
+   run_cmd($iptables_cmd3);
+    if ($? >> 8) {
+     print "$CTERROR failed to run $iptables_cmd3\n";    
+     exit 1; 
+   }
+   run_cmd($iptables_cmd4);
+    if ($? >> 8) {
+     print "$CTERROR failed to run $iptables_cmd4\n";    
+     exit 1; 
+   }
 }
 
 sub handle_rule_creation {
   my ($rule, $num_rules) = @_;
   my $node = new Vyatta::Conntrack::RuleIgnore;
-  my ($rule_string);
+  my ($rule_string1, $rule_string2);
 
   do_minimalrule_check($rule);
   $node->setup("system conntrack ignore rule $rule");
-  $rule_string = $node->rule();
-  apply_ignore_policy($rule_string, $rule, $num_rules);
+  ($rule_string1, $rule_string2) = $node->rule();
+  apply_ignore_policy($rule_string1, $rule_string2, $rule, $num_rules);
 }
 
 # mandate atleast inbound interface / source ip / dest ip or protocol per rule
