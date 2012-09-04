@@ -71,26 +71,30 @@ sub handle_rule_creation {
   my $node = new Vyatta::Conntrack::RuleIgnore;
   my ($rule_string);
 
-  do_interface_check($rule);
+  do_minimalrule_check($rule);
   $node->setup("system conntrack ignore rule $rule");
   $rule_string = $node->rule();
   apply_ignore_policy($rule_string, $rule, $num_rules);
 }
 
-# mandate only one interface configuration per rule
-sub do_interface_check {
+# mandate atleast inbound interface / source ip / dest ip or protocol per rule
+sub do_minimalrule_check {
   my ($rule) = @_;
   my $config = new Vyatta::Config;
-  my $intf_nos = $config->listNodes("system conntrack ignore rule $rule inbound-interface");
-  if (($intf_nos > 1)) {
-    Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: configure at most one inbound interface in rule $rule");
+  my $intf = $config->exists("system conntrack ignore rule $rule inbound-interface");
+  my $src = $config->exists("system conntrack ignore rule $rule source address");
+  my $dst = $config->exists("system conntrack ignore rule $rule destination address");
+  my $protocol = $config->exists("system conntrack ignore rule $rule protocol");
+
+  if ( (!$intf) and (!$src) and (!$dst) and (!$protocol)) {
+    Vyatta::Config::outputError(["Conntrack"], "Conntrack config error: No inbound-interface, source / destination address, protocol found in rule @_ ");
     exit 1;
   }
 }
 
 sub handle_rule_modification {
   my ($rule, $num_rules) = @_;
-  do_interface_check($rule);
+  do_minimalrule_check($rule);
   handle_rule_deletion($rule);
   handle_rule_creation($rule, $num_rules);
 }

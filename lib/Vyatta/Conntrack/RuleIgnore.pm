@@ -27,7 +27,7 @@ sub rule {
   # set CLI rule num as comment
   my @level_nodes = split (' ', $self->{_comment});
   $rule .= " -m comment --comment \"$level_nodes[2]-$level_nodes[4]\" ";
-
+  
   if (defined($self->{_interface})) {
     $rule .= " -i $self->{_interface} ";
   }
@@ -49,6 +49,7 @@ sub rule {
       $rule .= " -p $self->{_protocol}";
     }
   }
+
   $rule .= " $srcrule $dstrule ";
   return $rule;
 }
@@ -76,15 +77,22 @@ sub setup_base {
 
   $src->$addr_setup("$level source");
   $src->{_protocol} = $self->{_protocol};#needed to use address filter
-  if (($src->{_protocol}) and (($src->{_protocol} ne 'tcp') or ($src->{_protocol} ne 'udp')) and (defined($src->{_port})) ) { 
-    die "Error: Cannot specify port with protocol $src->{_protocol}\n"; 
-  }
-  $dst->$addr_setup("$level destination");
-  $dst->{_protocol} = $self->{_protocol};#needed to use address filter
-  if (($dst->{_protocol}) and (($dst->{_protocol} ne 'tcp') or ($dst->{_protocol} ne 'udp')) and (defined($dst->{_port})) ) { 
-    die "Error: Cannot specify port with protocol $dst->{_protocol}\n"; 
+
+  my $rule = $self->{_rule_number};
+  if (($src->{_port})) {
+    if (($src->{_protocol} ne 'udp') and ($src->{_protocol} ne 'tcp')) {
+      die "Error: port requires tcp / udp as protocol in rule $rule\n"; 
+    }
   }
 
+  $dst->$addr_setup("$level destination");
+  $dst->{_protocol} = $self->{_protocol};#needed to use address filter
+
+  if (($dst->{_port})) {
+    if (($dst->{_protocol} ne 'udp') and ($dst->{_protocol} ne 'tcp')) {
+      die "Error: port requires tcp / udp as protocol in rule $rule\n"; 
+    }
+    }
   return 0;
 }
 
