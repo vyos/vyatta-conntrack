@@ -80,7 +80,7 @@ sub setup_base {
 
   my $rule = $self->{_rule_number};
   if (($src->{_port})) {
-    if (($src->{_protocol} ne 'udp') and ($src->{_protocol} ne 'tcp')) {
+    if (!((grep /tcp/, $src->{_protocol}) or (grep /udp/, $src->{_protocol}))) {
       die "Error: port requires tcp / udp as protocol in rule $rule\n"; 
     }
   }
@@ -89,10 +89,10 @@ sub setup_base {
   $dst->{_protocol} = $self->{_protocol};#needed to use address filter
 
   if (($dst->{_port})) {
-    if (($dst->{_protocol} ne 'udp') and ($dst->{_protocol} ne 'tcp')) {
+    if (!((grep /tcp/, $dst->{_protocol}) or (grep /udp/, $dst->{_protocol}))) {
       die "Error: port requires tcp / udp as protocol in rule $rule\n"; 
     }
-    }
+  }
   return 0;
 }
 
