@@ -83,7 +83,16 @@ sub rule {
   } elsif ($self->{_protocol} eq "other") {
     $rule .= " -p all";
   }
-  $rule .= " $srcrule $dstrule ";
+
+  # make sure multiport is always behind single port option 
+  if ((grep /multiport/, $srcrule)) {
+    $rule .= " $dstrule $srcrule ";
+  } elsif ((grep /multiport/, $dstrule)) {
+    $rule .= " $srcrule $dstrule ";
+  } else {
+    $rule .= " $srcrule $dstrule ";
+   }
+
   return $rule;
 }
 
