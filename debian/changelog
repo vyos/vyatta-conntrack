@@ -1,3 +1,9 @@
+vyatta-conntrack (0.53+pacifica1) unstable; urgency=low
+
+  * new branch
+
+ -- John Southworth <john.southworth@vyatta.com>  Fri, 12 Oct 2012 18:47:49 -0700
+
 vyatta-conntrack (0.53) unstable; urgency=low
 
   * re-order src/dest rules if multiport used
