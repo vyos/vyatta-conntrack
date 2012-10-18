@@ -1,7 +1,7 @@
 help: UDP per connection timeout configuration options
 commit:expression: exec " UDP=( $(cli-shell-api listNodes system conntrack timeout custom rule $VAR(../../@) protocol udp )); \
   if [[ ${TCP[@]} == '' ]]; then \
-    echo 'please configure a UDP timer for rule $VAR(../../@)'
+    echo 'please configure a UDP timeout value for rule $VAR(../../@)'
     exit 1; \
   else \
     exit 0; \
