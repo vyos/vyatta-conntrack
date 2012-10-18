@@ -1,3 +1,9 @@
+vyatta-conntrack (0.54+daisy2) unstable; urgency=low
+
+  * Change timer to timeout value
+
+ -- Gaurav Sinha <gaurav.sinha@vyatta.com>  Thu, 18 Oct 2012 16:32:27 -0700
+
 vyatta-conntrack (0.54+daisy1) unstable; urgency=low
 
   * create daisy branch
