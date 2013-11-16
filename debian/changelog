@@ -1,3 +1,9 @@
+vyatta-conntrack (0.54+hydrogen1) unstable; urgency=low
+
+  * New branch
+
+ -- Daniil Baturin <daniil@baturin.org>  Sun, 17 Nov 2013 00:22:36 +0100
+
 vyatta-conntrack (0.54+daisy2) unstable; urgency=low
 
   * Change timer to timeout value
