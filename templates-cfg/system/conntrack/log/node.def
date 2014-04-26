@@ -1,3 +1,4 @@
 help: Log connection tracking events per protocol
 priority: 219 # failure at log shouldnt fail conntrack 
-end: sudo /opt/vyatta/sbin/vyatta-update-conntrack-log.pl
+end: [ -d /sys/module/nf_conntrack_netlink ] || sudo modprobe nf_conntrack_netlink
+     sudo /opt/vyatta/sbin/vyatta-update-conntrack-log.pl
