@@ -1,3 +1,9 @@
+vyatta-conntrack (0.54+hydrogen2) unstable; urgency=low
+
+  * Bug #185: ensure nf_conntrack_netlink module is loaded.
+
+ -- Daniil Baturin <daniil@baturin.org>  Sun, 27 Apr 2014 02:28:51 +0200
+
 vyatta-conntrack (0.54+hydrogen1) unstable; urgency=low
 
   * New branch
