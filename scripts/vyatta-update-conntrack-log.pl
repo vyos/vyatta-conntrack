@@ -31,6 +31,7 @@ if ($config->isEmpty()) {
   Vyatta::Conntrack::Config::kill_daemon();
   # delete the .lock and .log file getting generated
   `rm -f $pfile`;
+  `rmmod nf_conntrack_netlink`;
   exit 0;
 }
 
@@ -39,9 +40,11 @@ if (defined ($cmd)) {
   # First stop the daemon and restart with config 
   Vyatta::Conntrack::Config::kill_daemon();
   `rm -f $pfile`;
+  `modprobe nf_conntrack_netlink`;
   system("$cmd");
   if ($? >> 8) {
     print STDERR "Failed to start conntrack logging daemon";
+    `rmmod nf_conntrack_netlink`;
     exit 1;
   }
 }
