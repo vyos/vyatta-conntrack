@@ -1,3 +1,11 @@
+vyatta-conntrack (0.54+hydrogen3) unstable; urgency=low
+
+  * Revert "Bug #185: ensure nf_conntrack_netlink module is loaded."
+  * Bug #185: ensure nf_conntrack_netlink is loaded and unloaded
+    properly.
+
+ -- Daniil Baturin <daniil@baturin.org>  Thu, 08 May 2014 23:38:22 +0200
+
 vyatta-conntrack (0.54+hydrogen2) unstable; urgency=low
 
   * Bug #185: ensure nf_conntrack_netlink module is loaded.
