@@ -1,3 +1,9 @@
+vyatta-conntrack (0.54+vyos2+lithium1) unstable; urgency=low
+
+  * New branch
+
+ -- Alex Harpin <development@landsofshadow.co.uk>  Wed, 10 Dec 2014 19:50:28 +0000
+ 
 vyatta-conntrack (0.54+vyos1+helium2) unstable; urgency=low
 
   [ Daniil Baturin ]
