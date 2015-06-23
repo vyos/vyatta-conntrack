@@ -1,3 +1,16 @@
+vyatta-conntrack (0.54+vyos2+lithium4) unstable; urgency=low
+
+  [ Alex Harpin ]
+  * vyatta-conntrack: formatting changes for style consistency
+  * vyatta-conntrack: add port 1536 to the ports affected by sqlnet module
+  
+  [ Daniil Baturin ]
+  * Revert "Bug #185: ensure nf_conntrack_netlink module is loaded."
+  * Bug #185: ensure nf_conntrack_netlink is loaded and unloaded properly.
+    Patch by Kim Hagen.
+
+ -- Alex Harpin <development@landsofshadow.co.uk>  Tue, 23 Jun 2015 22:55:26 +0100
+ 
 vyatta-conntrack (0.54+vyos2+lithium3) unstable; urgency=low
 
   * vyatta-conntrack: update dh_gencontrol with new development build flag
