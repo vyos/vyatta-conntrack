@@ -34,6 +34,7 @@ sub add_helper_to_chain {
     if ($module eq 'sqlnet') {
         run_cmd("$iptables_cmd -I VYATTA_CT_HELPER -t raw -p tcp --dport 1521 -j CT --helper tns");
         run_cmd("$iptables_cmd -I VYATTA_CT_HELPER -t raw -p tcp --dport 1525 -j CT --helper tns");
+        run_cmd("$iptables_cmd -I VYATTA_CT_HELPER -t raw -p tcp --dport 1536 -j CT --helper tns");
     } elsif ($module eq 'nfs') {
         run_cmd(" $iptables_cmd -I VYATTA_CT_HELPER -t raw -p tcp --dport 111 -j CT --helper rpc");
         run_cmd(" $iptables_cmd -I VYATTA_CT_HELPER -t raw -p udp --dport 111 -j CT --helper rpc");
@@ -47,6 +48,7 @@ sub delete_helper_from_chain {
     if ($module eq 'sqlnet') {
         run_cmd("$iptables_cmd -D VYATTA_CT_HELPER -t raw -p tcp --dport 1521 -j CT --helper tns");
         run_cmd("$iptables_cmd -D VYATTA_CT_HELPER -t raw -p tcp --dport 1525 -j CT --helper tns");
+        run_cmd("$iptables_cmd -D VYATTA_CT_HELPER -t raw -p tcp --dport 1536 -j CT --helper tns");
     } elsif ($module eq 'nfs') {
         run_cmd("$iptables_cmd -D VYATTA_CT_HELPER -t raw -p tcp --dport 111 -j CT --helper rpc");
         run_cmd("$iptables_cmd -D VYATTA_CT_HELPER -t raw -p udp --dport 111 -j CT --helper rpc");
@@ -56,7 +58,6 @@ sub delete_helper_from_chain {
 # should disable the required helper module
 sub disable_helper_module {
     my ($module) = @_;
-
     delete_helper_from_chain($module);
 }
 
