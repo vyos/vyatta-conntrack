@@ -1,3 +1,12 @@
+vyatta-conntrack (0.54+vyos2+current1) unstable; urgency=medium
+
+  [ Thomas Jepp ]
+  * Fix build depends.
+
+  [ Kim Hagen ]
+
+ -- Kim Hagen <kim.sidney@gmail.com>  Sun, 24 Jan 2016 15:07:51 -0500
+
 vyatta-conntrack (0.54+vyos2+lithium4) unstable; urgency=low
 
   [ Alex Harpin ]
