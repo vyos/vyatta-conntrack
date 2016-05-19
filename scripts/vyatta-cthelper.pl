@@ -16,7 +16,7 @@ my %cmd_hash = (
     'ipv6'   => 'ip6tables'
 );
 
-my $nfct = "sudo /opt/vyatta/sbin/nfct";
+my $nfct = "sudo /usr/sbin/nfct";
 my ($enable_sqlnet, $disable_sqlnet, $enable_nfs, $disable_nfs);
 my $CTERROR = "Conntrack error:";
 

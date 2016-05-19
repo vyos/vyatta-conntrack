@@ -10,7 +10,8 @@ Architecture: any
 Depends: vyatta-cfg-system,
  vyatta-cfg,
  vyatta-op,
- conntrack
+ conntrack,
+ nfct
 Replaces: vyatta-cfg-system,
  vyatta-cfg-firewall
 Description: VyOS conntrack configuration
