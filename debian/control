@@ -11,6 +11,7 @@ Depends: vyatta-cfg-system,
  vyatta-cfg,
  vyatta-op,
  conntrack,
+ conntrack-helpers,
  nfct
 Replaces: vyatta-cfg-system,
  vyatta-cfg-firewall
