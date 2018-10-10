@@ -24,7 +24,7 @@ default: "enable"
 syntax:expression: $VAR(@) in "enable", "disable"; "must be either enable or disable"
 
 update:
-	if [ ! -e /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_loose ]; then
+	if [ ! -e /proc/sys/net/netfilter/nf_conntrack_tcp_loose ]; then
 	    sudo modprobe nf_conntrack_ipv4
 	fi
 	if [ "$VAR(@)" = "enable" ]; then
@@ -37,7 +37,7 @@ update:
 	fi
 
 delete:
-	if [ ! -e /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_loose ]; then
+	if [ ! -e /proc/sys/net/netfilter/nf_conntrack_tcp_loose ]; then
 	    sudo modprobe nf_conntrack_ipv4
 	fi
 	sudo sysctl -q -w net/ipv4/netfilter/ip_conntrack_tcp_loose=1
