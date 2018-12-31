@@ -12,7 +12,7 @@ update:
         then
           sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' \
                 /etc/modprobe.d/vyatta_nf_conntrack.conf"
-          sudo sh -c "echo options nf_conntrack hashsize=$VAR(@) >> \
+          sudo sh -c "echo options nf_conntrack hashsize=$VAR(@) nf_conntrack_helper=1 >> \
                 /etc/modprobe.d/vyatta_nf_conntrack.conf"
           echo "Updated conntrack hash size. This change will take affect when the system is rebooted."
         fi
