@@ -25,12 +25,8 @@ if [ -z "$cthash_cfg" ]; then
         cthash_cfg=32768 # default hashsize value that Vyatta ships
 fi
 
-if ! grep -q "nf_conntrack hashsize=$cthash_cfg$" \
-        /etc/modprobe.d/vyatta_nf_conntrack.conf
-then
-        sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' \
-                /etc/modprobe.d/vyatta_nf_conntrack.conf"
-        sudo sh -c "echo options nf_conntrack hashsize=$cthash_cfg >> \
-                /etc/modprobe.d/vyatta_nf_conntrack.conf"
+grep -q "nf_conntrack hashsize=$cthash_cfg" /etc/modprobe.d/vyatta_nf_conntrack.conf
+if [ $? != 0 ]; then
+        sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' /etc/modprobe.d/vyatta_nf_conntrack.conf"
+        sudo sh -c "echo options nf_conntrack hashsize=$cthash_cfg nf_conntrack_helper=1 >> /etc/modprobe.d/vyatta_nf_conntrack.conf"
 fi
-

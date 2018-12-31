@@ -13,7 +13,7 @@ delete: # set conntrack table size to standard 262144 entries if conntrack setti
         then
           sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' \
                 /etc/modprobe.d/vyatta_nf_conntrack.conf"
-          sudo sh -c "echo options nf_conntrack hashsize=32768 >> \
+          sudo sh -c "echo options nf_conntrack hashsize=32768 nf_conntrack_helper=1 >> \
                 /etc/modprobe.d/vyatta_nf_conntrack.conf"
           echo "Conntrack hash size set to default 32768. This change will take effect when the system is rebooted."
         fi
