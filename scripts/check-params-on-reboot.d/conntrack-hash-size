@@ -5,28 +5,11 @@
 
 BOOTFILE=$1
 
-# Obtain firewall config version
-version=`grep "=== vyatta-config-version:" $BOOTFILE | sed -n 's/.*\(firewall\@[0-9]\).*/\1/; h; x;p;q' | awk -F '@' '{print $2}'`
-
-if [ -z $version ]; then
-    logger -s "Warning: could not determine firewall config version. Conntrack hash size will not be updated."
-    exit 1
+if ! cthash_cfg=$($vyos_bin_dir/vyos-config-file-query -f $BOOTFILE --return-value -p "system conntrack hash-size"); then
+    cthash_cfg=32768 # default hashsize value that Vyatta ships
 fi
 
-if [ $version -ge 5 ]; then
-    # The config is from oxnard or higher
-    cthash_cfg=$(cli-shell-api cfReturnValue $BOOTFILE system conntrack hash-size)
-else
-    # The config is from pre-oxnard release
-    cthash_cfg=$(grep "conntrack-hash-size" /config/config.boot | awk -F ' ' '{print $2}')
-fi
-
-if [ -z "$cthash_cfg" ]; then
-        cthash_cfg=32768 # default hashsize value that Vyatta ships
-fi
-
-grep -q "nf_conntrack hashsize=$cthash_cfg" /etc/modprobe.d/vyatta_nf_conntrack.conf
-if [ $? != 0 ]; then
-        sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' /etc/modprobe.d/vyatta_nf_conntrack.conf"
-        sudo sh -c "echo options nf_conntrack hashsize=$cthash_cfg nf_conntrack_helper=1 >> /etc/modprobe.d/vyatta_nf_conntrack.conf"
+if ! grep -q "nf_conntrack hashsize=$cthash_cfg" /etc/modprobe.d/vyatta_nf_conntrack.conf; then
+    sudo sh -c "sed -i -e '/options nf_conntrack hashsize/d' /etc/modprobe.d/vyatta_nf_conntrack.conf"
+    sudo sh -c "echo options nf_conntrack hashsize=$cthash_cfg nf_conntrack_helper=1 >> /etc/modprobe.d/vyatta_nf_conntrack.conf"
 fi
