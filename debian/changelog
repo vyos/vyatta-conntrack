@@ -1,3 +1,9 @@
+vyatta-conntrack (1.2.4) unstable; urgency=low
+
+  * New release.
+
+ -- VyOS maintainers <maintainers@vyos.io>  Tue, 10 Dec 2019 23:40:06 +0200
+
 vyatta-conntrack (1.2.0-1) stable; urgency=medium
 
   * New branch.
@@ -514,4 +520,3 @@ vyatta-conntrack (0.1) unstable; urgency=low
   * Initial Release.
 
  -- Daniil Baturin <daniil.baturin@vyatta.com>  Thu, 3 Nov 2011 12:31:53 -0700
-
