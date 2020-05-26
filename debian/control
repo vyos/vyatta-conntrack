@@ -12,6 +12,11 @@ Depends: vyatta-cfg-system,
  vyatta-op,
  conntrack,
  conntrackd,
+ libxml-namespacesupport-perl,
+ libxml-sax-base-perl,
+ libxml-sax-perl,
+ libxml-libxml-perl,
+ libxml-simple-perl,
  nfct
 Replaces: vyatta-cfg-system,
  vyatta-cfg-firewall
