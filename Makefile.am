@@ -28,7 +28,7 @@ bin_sudo_users_SCRIPTS += scripts/vyatta-cthelper.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-ignore.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-show-ignore.pl
 
-curver_DATA = cfg-version/conntrack@1
+curver_DATA = cfg-version/conntrack@2
 
 modprobe_DATA  = etc/modprobe.d/vyatta_nf_conntrack.conf
 
