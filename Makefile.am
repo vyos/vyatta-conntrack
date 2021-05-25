@@ -1,7 +1,6 @@
 cfgdir = $(datadir)/vyatta-cfg/templates
 opdir = $(datadir)/vyatta-op/templates
 share_perl5dir	  = $(datarootdir)/perl5/Vyatta/Conntrack
-curverdir = $(sysconfdir)/config-migrate/current
 modprobedir = /etc/modprobe.d
 
 vprefix = /opt/vyatta
@@ -27,8 +26,6 @@ bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-timeouts.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-cthelper.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-conntrack-ignore.pl
 bin_sudo_users_SCRIPTS += scripts/vyatta-show-ignore.pl
-
-curver_DATA = cfg-version/conntrack@2
 
 modprobe_DATA  = etc/modprobe.d/vyatta_nf_conntrack.conf
 
