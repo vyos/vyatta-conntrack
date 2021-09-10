@@ -1,7 +1,0 @@
-help: Disable PPTP connection tracking
-
-create: sudo rmmod nf_nat_pptp
-        sudo rmmod nf_conntrack_pptp
-
-delete: sudo modprobe nf_conntrack_pptp
-        sudo modprobe nf_nat_pptp
