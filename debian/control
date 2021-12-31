@@ -18,7 +18,6 @@ Depends: vyatta-cfg-system,
  libxml-libxml-perl,
  libxml-simple-perl,
  nfct
-Replaces: vyatta-cfg-system,
- vyatta-cfg-firewall
+Replaces: vyatta-cfg-system
 Description: VyOS conntrack configuration
  VyOS conntrack configuration utiliites, templates and scripts.
