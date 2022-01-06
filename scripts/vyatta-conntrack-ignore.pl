@@ -10,12 +10,11 @@ use Vyatta::Conntrack::RuleIgnore;
 use Vyatta::IpTables::AddressFilter;
 use Vyatta::Conntrack::ConntrackUtil;
 use Getopt::Long;
-use Vyatta::Zone;
 use Sys::Syslog qw(:standard :macros);
 
 #for future use when v6 ignore s need to be set
-my %cmd_hash = ( 'ipv4'        => 'iptables',
-		 'ipv6'   => 'ip6tables');
+my %cmd_hash = ( 'ipv4'        => 'iptables-nft',
+		 'ipv6'   => 'ip6tables-nft');
 # Enable printing debug output to stdout.
 my $debug_flag = 0;
 
@@ -35,8 +34,8 @@ openlog("vyatta-conntrack", "pid", "local0");
 
 sub remove_ignore_policy {
     my ($rule_string) = @_;
-    my $iptables_cmd1 = "iptables -D VYATTA_CT_IGNORE -t raw $rule_string -j CT --notrack";
-    my $iptables_cmd2 = "iptables -D VYATTA_CT_IGNORE -t raw $rule_string -j RETURN";
+    my $iptables_cmd1 = "iptables-nft -D VYOS_CT_IGNORE -t raw $rule_string -j CT --notrack";
+    my $iptables_cmd2 = "iptables-nft -D VYOS_CT_IGNORE -t raw $rule_string -j RETURN";
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
      print "$CTERROR failed to run $iptables_cmd2\n";    
@@ -51,9 +50,9 @@ sub remove_ignore_policy {
 sub apply_ignore_policy {
    my ($rule_string, $rule, $num_rules) = @_;
    # insert at num_rules + 1 as there are so many rules already. 
-   my $iptables_cmd1 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string -j CT --notrack";
+   my $iptables_cmd1 = "iptables-nft -I VYOS_CT_IGNORE $num_rules -t raw $rule_string -j CT --notrack";
    $num_rules +=1;
-   my $iptables_cmd2 = "iptables -I VYATTA_CT_IGNORE $num_rules -t raw $rule_string -j RETURN";
+   my $iptables_cmd2 = "iptables-nft -I VYOS_CT_IGNORE $num_rules -t raw $rule_string -j RETURN";
    run_cmd($iptables_cmd1);
     if ($? >> 8) {
      print "$CTERROR failed to run $iptables_cmd1\n";    

@@ -13,8 +13,8 @@ use Vyatta::Zone;
 use Sys::Syslog qw(:standard :macros);
 
 #for future use when v6 timeouts need to be set
-my %cmd_hash = ( 'ipv4'        => 'iptables',
-		 'ipv6'   => 'ip6tables');
+my %cmd_hash = ( 'ipv4'        => 'iptables-nft',
+		 'ipv6'   => 'ip6tables-nft');
 # Enable printing debug output to stdout.
 my $debug_flag = 0;
 
@@ -36,8 +36,8 @@ sub remove_timeout_policy {
     my ($rule_string, $timeout_policy) = @_;
     my @tokens = split (' ', $timeout_policy);
     # First remove the iptables rules before removing policy.
-    my $iptables_cmd1 = "iptables -D VYATTA_CT_TIMEOUT -t raw $rule_string -j CT --timeout $tokens[0]";
-    my $iptables_cmd2 = "iptables -D VYATTA_CT_TIMEOUT -t raw $rule_string -j RETURN";
+    my $iptables_cmd1 = "iptables-nft -D VYOS_CT_TIMEOUT -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd2 = "iptables-nft -D VYOS_CT_TIMEOUT -t raw $rule_string -j RETURN";
     my $nfct_timeout_cmd = "$nfct timeout delete $timeout_policy"; 
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
@@ -66,9 +66,9 @@ sub apply_timeout_policy {
     my $nfct_timeout_cmd = "$nfct timeout add $timeout_policy"; 
     my @tokens = split (' ', $timeout_policy);
     # insert at num_rules + 1 as there are so many rules already. 
-    my $iptables_cmd1 = "iptables -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j CT --timeout $tokens[0]";
+    my $iptables_cmd1 = "iptables-nft -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j CT --timeout $tokens[0]";
     $num_rules +=1;
-    my $iptables_cmd2 = "iptables -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j RETURN";
+    my $iptables_cmd2 = "iptables-nft -I VYATTA_CT_TIMEOUT $num_rules -t raw $rule_string -j RETURN";
     run_cmd($nfct_timeout_cmd);
     if ($? >> 8) {
       print "$CTERROR failed to run $nfct_timeout_cmd\n";    
@@ -84,7 +84,7 @@ sub apply_timeout_policy {
     run_cmd($iptables_cmd2);
     if ($? >> 8) {
       run_cmd("nfct timeout delete policy_timeout_$rule");   
-      run_cmd("iptables -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]");   
+      run_cmd("iptables-nft -D PREROUTING -t raw $rule_string -j CT --timeout $tokens[0]");   
       print "$CTERROR failed to run $iptables_cmd2\n";    
       exit 1;
     }
