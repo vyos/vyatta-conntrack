@@ -43,7 +43,7 @@ sub print_ignore_rules {
   $config->setLevel("system conntrack ignore rule");
   my @rules = sort numerically $config->listOrigNodes(); 
 
-  my @rules_in_chain = `sudo iptables -L VYATTA_CT_IGNORE -t raw -nv`;
+  my @rules_in_chain = `sudo iptables-nft -L VYOS_CT_IGNORE -t raw -nv`;
   if (!(@rules_in_chain)){
     die "Error: no ignore rules configured\n";
   }

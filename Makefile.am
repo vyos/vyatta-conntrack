@@ -1,6 +1,7 @@
 cfgdir = $(datadir)/vyatta-cfg/templates
 opdir = $(datadir)/vyatta-op/templates
 share_perl5dir	  = $(datarootdir)/perl5/Vyatta/Conntrack
+ipt_share_perl5dir	  = $(datarootdir)/perl5/Vyatta/IpTables
 modprobedir = /etc/modprobe.d
 
 vprefix = /opt/vyatta
@@ -17,6 +18,11 @@ share_perl5_DATA = lib/Vyatta/Conntrack/Config.pm
 share_perl5_DATA  += lib/Vyatta/Conntrack/ConntrackUtil.pm
 share_perl5_DATA  += lib/Vyatta/Conntrack/RuleCT.pm
 share_perl5_DATA  += lib/Vyatta/Conntrack/RuleIgnore.pm
+
+ipt_share_perl5_DATA = lib/Vyatta/IpTables/Rule.pm
+ipt_share_perl5_DATA  += lib/Vyatta/IpTables/AddressFilter.pm
+ipt_share_perl5_DATA  += lib/Vyatta/IpTables/IpSet.pm
+ipt_share_perl5_DATA  += lib/Vyatta/IpTables/Mgr.pm
 
 sbin_SCRIPTS = scripts/vyatta-update-conntrack-log.pl
 bin_sudo_usersdir = $(bindir)/sudo-users

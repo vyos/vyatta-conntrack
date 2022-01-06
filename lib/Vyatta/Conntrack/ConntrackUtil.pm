@@ -50,7 +50,7 @@ our @EXPORT = qw(check_for_conntrack_hooks, process_protocols, check_and_add_hel
 #returns one if any hook is present
 
 sub check_for_conntrack_hooks {
-    my @output = `sudo iptables -L -t raw`; 
+    my @output = `sudo iptables-nft -L -t raw`; 
     foreach(@output) {
         if (($_ =~ m/WEBPROXY_CONNTRACK/)) {
             return 1;
@@ -68,7 +68,7 @@ sub check_for_conntrack_hooks {
 sub
 check_ct_helper_rules {
   my $index;
-  my $cthelper_chain = "VYATTA_CT_HELPER";
+  my $cthelper_chain = "VYOS_CT_HELPER";
     foreach my $label ('PREROUTING', 'OUTPUT') {
       $index = ipt_find_chain_rule($iptables_cmd, 'raw', $label, $cthelper_chain);
       if (!defined($index)) {
