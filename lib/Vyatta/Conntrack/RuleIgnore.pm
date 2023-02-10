@@ -26,8 +26,7 @@ sub rule {
   my $tcp_and_udp = 0;
   # set CLI rule num as comment
   my @level_nodes = split (' ', $self->{_comment});
-  $rule .= " -m comment --comment \"$level_nodes[2]-$level_nodes[4]\" ";
-  
+
   if (defined($self->{_interface})) {
     $rule .= " -i $self->{_interface} ";
   }
@@ -58,6 +57,7 @@ sub rule {
   } else {
     $rule .= " $srcrule $dstrule ";
    }
+  $rule .= " -m comment --comment \"$level_nodes[2]-$level_nodes[4]\" ";
   return $rule;
 }
 
